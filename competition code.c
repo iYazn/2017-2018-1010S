@@ -80,7 +80,7 @@ task usercontrol()
   while (true)
   {
   	motor(rightback) = vexRT[Ch2];
-		motor(leftback) = vexRT[Ch3];
+		motor(leftback) = vexRT[Ch3];//joystick for control base
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
