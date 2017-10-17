@@ -97,13 +97,13 @@ task usercontrol()
 		if(abs(newRightPower) < 6)
 		{
 			newRightPower = 0;
-		}//control rightback motors by joystick
+		}
 		int newLeftPower;
 		newLeftPower = vexRT(Ch3);
 		if(abs(newLeftPower) < 6)
 		{
 			newLeftPower = 0;
-		}//control leftback motors by joystick
+		}//if the motor is less than 5, then it would become zero
 		while(1 == 1)
 		{
 			setRightback(newRightPower);
