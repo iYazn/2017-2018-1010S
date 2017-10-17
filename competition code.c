@@ -54,8 +54,17 @@ void setLeftback(int power)
 {
 	motor(leftback1) = motor(leftback2) = power;
 }
-
-
+void setBack(int power, int time)
+{
+	motor(rightback1) = motor(rightback2) = power;
+	motor(leftback1) = motor(leftback2) = power;
+	wait1Msec(time);
+}
+void setLift(int power, int time)
+{
+	motor(rightlift) = motor(leftlift) = power;
+	wait1Msec(time);
+}//combine two motors in one code.
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /*                              Autonomous Task                              */
@@ -68,6 +77,10 @@ void setLeftback(int power)
 
 task autonomous()
 {
+	setBack(127, 2000);//autononous move forward for 2 second for a test
+	setBack(0, 1000);//stop for 1 second
+	setLift(40, 1500);//lift the mobile goal(I don't know what time I should put on)
+
 	// ..........................................................................
 	// Insert user code here.
 	// ..........................................................................
@@ -110,26 +123,15 @@ task usercontrol()
 			setLeftback(newLeftPower);//joystick for control base.
 			if(vexRT[Btn6U] == 1)
 			{
-				motor[rightlift] = 40;
+				motor[rightlift] = motor[leftlift] = 40;
 			}
 			else if(vexRT[Btn6D] == 1)
 			{
-				motor[rightlift] = -40;
+				motor[rightlift] = motor[leftlift] = -40;
 			}
 			else
 			{
-				motor[rightlift] = 0;
-			}
-			if(vexRT[Btn5U] == 1)
-				{
-				motor[leftlift] = 40;
-			}
-			else if(vexRT[Btn5D] == 1)
-			{
-				motor[leftlift] = -40;
-			}
-			{
-				motor[leftlift] = 0;
+				motor[rightlift] = motor[leftlift] = 0;
 			}
 		}//motor 5 and 6 for lift.
 
