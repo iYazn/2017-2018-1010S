@@ -40,7 +40,7 @@ void pre_auton()
 
 	// Set bDisplayCompetitionStatusOnLcd to false if you don't want the LCD
 	// used by the competition include file, for example, you might want
-	// to display your team name on the LCD in this function.
+	// to display your team name on the LCD in this function.h
 	// bDisplayCompetitionStatusOnLcd = false;
 
 	// All activities that occur before the competition starts
@@ -79,7 +79,7 @@ task autonomous()
 {
 	setBack(127, 2000);//autononous move forward for 2 second for a test
 	setBack(0, 1000);//stop for 1 second
-	setLift(40, 1500);//lift the mobile goal(I don't know what time I should put on)
+	setLift(40, 1500);//lift the mobile goal.
 
 	// ..........................................................................
 	// Insert user code here.
