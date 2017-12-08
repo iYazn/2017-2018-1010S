@@ -1,5 +1,3 @@
-#pragma config(Sensor, dgtl1,  RightBase,      sensorQuadEncoder)
-#pragma config(Sensor, dgtl3,  LeftBase,       sensorQuadEncoder)
 #pragma config(Motor,  port1,           LeftBack,      tmotorVex393HighSpeed_HBridge, openLoop)
 #pragma config(Motor,  port2,           LeftFront,     tmotorVex393HighSpeed_MC29, openLoop)
 #pragma config(Motor,  port3,           RightFront,    tmotorVex393HighSpeed_MC29, openLoop, reversed)
@@ -139,32 +137,25 @@ task LiftUp()
 }
 task autonomous()
 {
-	SensorValue[RightBase] = SensorValue[LeftBase] = 0;////Clear the right and left encoder value
-	TowerRise(127, 750);
-  TowerStop(10);
-  Lift(-127, 1540);
-	LiftStop(100);
-	SetBase(127, 1480);
+	SetBase(127, 150);
 	Stop(100);
-	Lift(127, 1450);
-	LiftStop(100);
-	SetBase(-80, 1580);
-	Stop(30);
-	RightPointTurn(760);
-	Stop(20);
-	SetBase(127, 430);
-	Stop(10);
-	RightPointTurn(338);
-	SetBase(127, 685);
+	LeftPointTurn(100);
 	Stop(100);
-	Lift(-127, 900);
+	SetBase(127, 300);
+	LeftPointTurn(425);
+	Stop(200);
+	Lift(-127, 200);
 	LiftStop(100);
-	SetBase(127, 450);
+	SetBase(127, 1450);
+	Stop(200);
+	Lift(127, 1300);
+	SetBase(-80, 1250);
+	LeftPointTurn(300);
 	Stop(100);
-	Lift(-127, 120);
-	LiftStop(10);
+	SetBase(127, 200);
+	Lift(-127, 1200);
+	LiftStop(200);
 	SetBase(-127, 1000);
-	Stop(100);
 
 
 	// ..........................................................................
