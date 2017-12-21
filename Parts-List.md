@@ -13,14 +13,14 @@ Main Part                 | Sub-Part             | Serial Number        | Commen
 **_Motors_**              | Motor 2              |        170013        |  1
 **_Motors_**              | Motor 3              |        170152        |  1
 **_Motors_**              | Motor 4              |        1710150       |  1
-**_Motors_**              | Motor 5              |                      |  1
-**_Motors_**              | Motor 6              |                      |  1
-**_Motors_**              | Motor 7              |                      |  1
-**_Motors_**              | Motor 8              |                      |  1
-**_Motors_**              | Motor 9              |                      |  1
-**_Motors_**              | Motor 10             |                      |  1 
-**_Motors_**              | Motor 11             |                      |  1
-**_Motors_**              | Motor 12             |                      |  1
+**_Motors_**              | Motor 5              |        7122AA        |  1
+**_Motors_**              | Motor 6              |        4342AA        |  1
+**_Motors_**              | Motor 7              |        6462AA        |  1
+**_Motors_**              | Motor 8              |        4342AA        |  1
+**_Motors_**              | Motor 9              |        7122AA        |  1
+**_Motors_**              | Motor 10             |        7072AA        |  1 
+**_Motors_**              | Motor 11             |        7072AA        |  1
+**_Motors_**              | Motor 12             |        6028AA        |  1
 **_Motors_**              | Motor 13             |                      |  0
 **_Motors_**              | Motor 14             |                      |  0
 **_VexNET_**              | Key 1                |                      |  have one
