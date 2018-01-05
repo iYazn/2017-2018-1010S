@@ -125,7 +125,8 @@ void Move(int power, int distance)
 			SetLeft(power - error*kp);
 			SetRight(power + error*kp);
 		}//end while
-		SetBase(0);
+		SetRight(0);
+		SetLeft(0);
 	}// end MoveForward
 
 /*---------------------------------------------------------------------------*/
@@ -196,10 +197,8 @@ task usercontrol()
 	// User control code here, inside the loop
 	while (true)
 	{
-		motor[RightFront] = vexRT(Ch2) + VexRT(Ch1);
-		motor[RightBack] = vexRT(Ch2) - VexRT(Ch1);//combine Right motors all forward.	`````````
-		motor[LeftBack] = vexRT(Ch2) + VexRT(Ch1);
-		motor[LeftFront] = vexRT(Ch2) - VexRT(Ch1);//combine Left Motors all forward.
+		motor[RightFront] = motor[RightBack] = vexRT(Ch2) - vexRT(Ch1);//combine Right Motors all forward.
+		motor[LeftBack] = motor[LeftFront] = vexRT(Ch2) + vexRT(Ch1);//combine Left Motors all forward.
 		if(vexRT[Btn6U] == 1)
 		{
 			motor[RightLift] = motor[LeftLift] = 127;
