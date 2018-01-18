@@ -50,7 +50,7 @@
 | way to decalaring variables for battery voltage                     |
 \*===================================================================*/
 //int statement used for numbers.
-int myAutonomous = 10;
+int myAutonomous = 20;
 
 /*===================================================================*\
 | Auton Names.........................................................|
@@ -60,10 +60,14 @@ int myAutonomous = 10;
 | close string for the claw method for easier use                     |
 \*===================================================================*/
 const string autonOne = "Skills";
-const string autonTwo = "Red Right";
-const string autonThree = "Red Left";
-const string autonFour = "Blue Right";
-const string autonFive = "Blue Left";
+const string autonTwo = "Red Right 20";
+const string autonThree = "Red Left 20";
+const string autonFour = "Blue Right 20";
+const string autonFive = "Blue Left 20";
+const string autoSix = "Red Right 10";
+const string autoSeven = "Red Left 10";
+const string autoEight = "Blue Right 10";
+const string autoNine = "Blue Left 10"
 const string autonTest = "Test";
 string open = "open";
 string close = "close";
@@ -265,6 +269,14 @@ void displayLCD(){
 	case 5:
 		displayLCDCenteredString(0, autonSix);displayLCDCenteredString(1, "Selected");break;
 	case 6;
+		displayLCDCenteredString(0, autonSeven);displayLCDCenteredString(1, "Selected");break;
+	case 7;
+		displayLCDCenteredString(0, autonEight);displayLCDCenteredString(1, "Selected");break;
+	case 8;
+		displayLCDCenteredString(0, autonNine);displayLCDCenteredString(1, "Selected");break;
+	case 9;
+		displayLCDCenteredString(0, autonTest);displayLCDCenteredString(1, "Selected");break;
+	case 10;
 	}
 }
 
@@ -301,8 +313,16 @@ void autoSetter (int value, bool select = false){
 	case 4:
 		displayLCDCenteredString(0, autonFive); break;
 	case 5:
+		displayLCDCenteredString(0, autonSix); break;
+	case 6:
+		displayLCDCenteredString(0, autonSeven); break;
+	case 7:
+		displayLCDCenteredString(0, autonEight); break;
+	case 8:
+		displayLCDCenteredString(0, autonNine); break;
+	case 9:
 		displayLCDCenteredString(0, autonTest); break;
-	case 6;
+	case 10;
 	}
 }
 
@@ -410,6 +430,22 @@ task 1010S (){
 		lightEmittingDiode (0);
 		SensorValue[LED6] = 1;
 		wait1Msec(150);
+				SensorValue[LED6] = 1;
+		wait1Msec(150);
+		lightEmittingDiode (0);
+		SensorValue[LED5] = 1;
+		wait1Msec(150);
+		lightEmittingDiode (0);
+		SensorValue[LED4] = 1;
+		wait1Msec(150);
+		lightEmittingDiode (0);
+		SensorValue[LED3] = 1;
+		wait1Msec(150);
+		lightEmittingDiode (0);
+		SensorValue[LED2] = 1;
+		wait1Msec(150);
+		lightEmittingDiode (0);
+		SensorValue[LED1] = 1;
 	}
 	EndTimeSlice();
 }
@@ -428,11 +464,11 @@ task 1010S (){
 |---------------------------------------------------------------------|
 | Done: none                                                          |
 \*===================================================================*/
-void RedRight()
+void RedRight20()
 {
-	char Red_Right;
+	char Red_Right_20;
 
-	//score preload on the mobile goal.
+	//score preload on the mobile goal in 20 points zone.
 	startTask(TowerTask);
 	TowerPosition = 700;
 	wait1Msec(200);
@@ -455,9 +491,31 @@ void RedRight()
 	StopDrive(100);
 }
 
+void RedRight10()
+{
 
-
-
+//score preload on mobile goal the 10 points zone
+	startTask(TowerTask);
+	TowerPosition = 700;
+	wait1Msec(200);
+	Lift(-127, 1400);
+	LiftStop(10);
+	Move(127, 500);
+	StopDrive(300);
+	Lift(127, 1400);
+	TowerDown(0);
+	TowerStop(100);
+	Claw(127, 400);
+	Move(-127, -400);
+	LeftPointTurn(200);
+	Move(80, 134);
+	LeftPointTurn(130);
+	Move(127, 140);
+	TowerRise(300);
+	Lift(-127; 1200);
+	Move(-127, 180);
+	StopDrive(100);
+}
 
 
 /*---------------------------------------------------------------------------*/
