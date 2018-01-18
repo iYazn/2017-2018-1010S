@@ -146,17 +146,26 @@ void LeftPointTurn(int distance)
 	SetDrive(0);
 }
 
-void TowerRise(int power, int time)
+void TowerRise(int position)
 {
-	motor[RTower] = motor[LTower]  = power;
-	wait1Msec(time);
+	while(SensorValue[RTower] < position;
+	{
+	motor[RTower] = motor[LTower]  = 127;
+	}
+
+	motor[RTower] = motor[LTower] = 0;
 }
 
-void TowerDown(int power, int time)
+void TowerDown(int position)
 {
-	motor[RTower] = motor[LTower]  = -power;
-	wait1Msec(time);
+while(SensorValue[RTower] > position;
+	{
+	motor[RTower] = motor[LTower]  = -127;
+	}
+
+	motor[RTower] = motor[LTower] = 0;
 }
+
 void TowerStop(int time)
 {
 	motor[RTower] = motor[LTower] = 0;
@@ -186,6 +195,32 @@ void LiftStop(int time)
 /*                                                                           */
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
+
+int TowerHold = 1; //Tower loop flag
+int TowerPosition = 0; // Position to set the tower
+
+task TowerTask()
+{
+	TowerPosition = SensorValue[RTower];
+	while(true)
+	{
+		if(TowerHold)//should tower code be running?
+		{
+			//calculate difference
+		int difference = (SensorValue[RTower] - TowerPosition)*0.5;
+
+		//Cap difference value if needed
+		if(difference > 127)
+			difference = 127;
+		else if(difference < -127)
+			difference = -127;
+
+			motor[RTower] = motor[LTower] = difference;
+		}
+	}
+}
+
+
 
 task autonomous()
 {
