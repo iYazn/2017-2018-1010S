@@ -229,6 +229,12 @@ void LiftStop(int time)
 	wait1Msec(time);
 }
 
+void Claw(int power, int time)
+{
+	motor[RClaw] = motor[LClaw] = power;
+	wait1Msec(time);
+}
+
 /*------------------------------------------------------------------*\
 // 	 _     ___________
 //	| |   /  __ \  _  \
@@ -425,12 +431,31 @@ task 1010S (){
 void RedRight()
 {
 	char Red_Right;
+
+	//score preload on the mobile goal.
 	startTask(TowerTask);
 	TowerPosition = 700;
 	wait1Msec(200);
 	Lift(-127, 1400);
 	LiftStop(10);
-	Move(127,
+	Move(127, 500);
+	StopDrive(300);
+	Lift(127, 1400);
+	TowerDown(0);
+	TowerStop(100);
+	Claw(127, 400);
+	Move(-127, -400);
+	LeftPointTurn(200);
+	Move(80, 134);
+	LeftPointTurn(130);
+	Move(127, 240);
+	TowerRise(300);
+	Lift(-127; 1200);
+	Move(-127, 200);
+	StopDrive(100);
+}
+
+
 
 
 
