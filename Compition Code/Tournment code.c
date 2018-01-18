@@ -54,11 +54,13 @@ void pre_auton()
   // Example: clearing encoders, setting servo positions, ...
 }
 
-void SetRight(int power){
+void SetRight(int power)
+{
 	motor[RFront] = motor[RBack] = power;
 }
 
-void SetLeft(int power)(
+void SetLeft(int power)
+{
 	motor[LFront] = motor[LBack] = power;
 }
 
@@ -67,10 +69,11 @@ void SetLeft(int power)(
 |---------------------------------------------------------------------|
 | sets the drive encoders to 0 to then be used throughout the methods |
 \*===================================================================*/
-void setDrive (){
+void setDrive (int power){
 	// resets encoder values to 0
 	SensorValue(REncouder) = 0;
 	SensorValue(LEncouder) = 0;
+	motor[RFront] = motor[RBack] = motor[LFront] = motor[LBack] = power;
 }
 
 /*===================================================================*\
@@ -110,11 +113,12 @@ void StopLift()
 \*===================================================================*/
 void Move(int power, int distance)
 {
-	SetDrive();
+	SensorValue[LEncouder] = 0;
+	SensorValue[REncouder] = 0;
 	float kp = 0.5;//proportional constant, can be tuned.
-	while(abs(SensorValue[RightBase]+SensorValue[LeftBase])/2 < distance)
+	while(abs(SensorValue[REncouder]+SensorValue[LEncouder])/2 < distance)
 		{
-			int error = SensorValue[LeftBase] - SensorValue[RightBase];
+			int error = SensorValue[LEncouder] - SensorValue[REncouder];
 			//find the difference between the two encoders.
 			SetLeft(power - error*kp);
 			SetRight(power + error*kp);
@@ -125,7 +129,7 @@ void Move(int power, int distance)
 
 void RightPointTurn(int distance)
 {
-		while(abs(SensorValue[LeftBase]) < distance)
+		while(abs(SensorValue[LEncouder]) < distance)
 	{
 		SetRight(-127);
 		SetLeft(127);
@@ -134,29 +138,13 @@ void RightPointTurn(int distance)
 }
 void LeftPointTurn(int distance)
 {
-		while(abs(SensorValue[RightBase])<distance)
+		while(abs(SensorValue[REncouder])<distance)
 	{
 		SetRight(127);
 		SetLeft(-127);
 	}
 	SetDrive(0);
 }
-
-void Move(int power, int distance)
-{
-	SensorValue[LeftBase] = 0;
-	SensorValue[RightBase] = 0;
-	float kp = 0.2;//proportional constant, can be tuned.
-	while(abs(SensorValue[RightBase]+SensorValue[LeftBase])/2 < distance)
-		{
-			int error = SensorValue[LeftBase] - SensorValue[RightBase];
-			//find the difference between the two encoders.
-			SetLeft(power - error*kp);
-			SetRight(power + error*kp);
-		}//end while
-		SetRight(0);
-		SetLeft(0);
-	}// end MoveForward
 
 void TowerRise(int power, int time)
 {
