@@ -103,6 +103,71 @@ void pre_auton()
   // Example: clearing encoders, setting servo positions, ...
 }
 
+/*------------------------------------------------------------------*\
+//	______               _
+//	| ___ \             | |
+//	| |_/ /___  ___  ___| |_ ___
+//	|    // _ \/ __|/ _ \ __/ __|
+//	| |\ \  __/\__ \  __/ |_\__ \
+//	\_| \_\___||___/\___|\__|___/
+\*------------------------------------------------------------------*/
+
+/*===================================================================*\
+| Resets Drive Encoder................................................|
+|---------------------------------------------------------------------|
+| sets the drive encoders to 0 to then be used throughout the methods |
+\*===================================================================*/
+void setDrive (){
+	// resets encoder values to 0
+	SensorValue(LeftEncoder) = 0;
+	SensorValue(RightEncoder) = 0;
+}
+
+/*===================================================================*\
+| Resets Gyro.........................................................|
+|---------------------------------------------------------------------|
+| sets the gyro value to 0 to then be used throughout the methods     |
+\*===================================================================*/
+void setGyro (){
+	// resets the gyro value to 0
+	SensorValue(Gyro) = 0;
+}
+
+/*===================================================================*\
+| Initilize Sensors...................................................|
+|---------------------------------------------------------------------|
+| completly wipes out all data in the sensors then re-declares them   |
+\*===================================================================*/
+void intSensor (){
+	// sets sensor type to none to start the full sensor reset
+	SensorType[Gyro] = sensorNone;
+	SensorType[LeftEncoder] = sensorNone;
+	SensorType[RightEncoder] = sensorNone;
+	// waits 1 sec before setting all the sensors
+	wait1Msec(1000);
+	SensorType[Gyro] = sensorGyro;
+	SensorType[LeftEncoder] = sensorQuadEncoder;
+	SensorType[RightEncoder] = sensorQuadEncoder;
+	// waits 2 seconds to let gyro initilize properly
+	// DO NOT MOVE WHILE THIS IS HAPPENING
+	wait1Msec(2000);
+}
+
+/*===================================================================*\
+| Turn Time...........................................................|
+|---------------------------------------------------------------------|
+| used to control turns based on time rather than gyro, mostly used   |
+| in the turn gyro function to help stop it                           |
+\*===================================================================*/
+void turnTime (int power, int time){
+	// sets the drive motors to turn using a set power
+	motor[RFront] = motor[RBack] = -power;
+	motor[LFront] motor[Lback] = power;
+	// waits the set amout of mSec to carry out the method
+	wait1Msec(time);
+	stopDrive ();
+}
+
 void SetRight(int power)
 {
 	motor[RFront] = motor[RBack] = power;
@@ -125,6 +190,16 @@ void setDrive (int power){
 	motor[RFront] = motor[RBack] = motor[LFront] = motor[LBack] = power;
 }
 
+/*------------------------------------------------------------------*\
+//	 _____ _
+//	/  ___| |
+//	\ `--.| |_ ___  _ __  ___
+//	 `--. \ __/ _ \| '_ \/ __|
+//	/\__/ / || (_) | |_) \__ \
+//	\____/ \__\___/| .__/|___/
+//							   |_|
+\*------------------------------------------------------------------*/
+
 /*===================================================================*\
 | Stop Drive..........................................................|
 |---------------------------------------------------------------------|
@@ -143,6 +218,11 @@ void StopDrive()
 void StopLift()
 {
 	motor[RLift] = motor[LLift] = 0;
+}
+
+void StopTower()
+{
+	motor[RTower] = motor[LTower] = 0;
 }
 
 /*------------------------------------------------------------------*\
