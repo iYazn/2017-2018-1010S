@@ -1,6 +1,12 @@
 #pragma config(Sensor, in1,    RTower,         sensorPotentiometer)
 #pragma config(Sensor, dgtl1,  REncouder,      sensorQuadEncoder)
 #pragma config(Sensor, dgtl3,  LEncouder,      sensorQuadEncoder)
+#pragma config(Sensor, dgtl5,  LCD1,           sensorLEDtoVCC)
+#pragma config(Sensor, dgtl6,  LCD2,           sensorLEDtoVCC)
+#pragma config(Sensor, dgtl7,  LCD3,           sensorLEDtoVCC)
+#pragma config(Sensor, dgtl8,  LCD4,           sensorLEDtoVCC)
+#pragma config(Sensor, dgtl9,  LCD5,           sensorLEDtoVCC)
+#pragma config(Sensor, dgtl10, LCD6,           sensorLEDtoVCC)
 #pragma config(Motor,  port1,           RClaw,         tmotorVex393_HBridge, openLoop)
 #pragma config(Motor,  port2,           RFront,        tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           LFront,        tmotorVex393_MC29, openLoop)
@@ -37,6 +43,45 @@
 /*  function is only called once after the cortex has been powered on and    */
 /*  not every time that the robot is disabled.                               */
 /*---------------------------------------------------------------------------*/
+/*===================================================================*\
+| Initilize Global Variables..........................................|
+|---------------------------------------------------------------------|
+| these variables are used in methods that deal with auton all the    |
+| way to decalaring variables for battery voltage                     |
+\*===================================================================*/
+//int statement used for numbers.
+int myAutonomous = 10;
+
+/*===================================================================*\
+| Auton Names.........................................................|
+|---------------------------------------------------------------------|
+| declares the constant strings for the different auton names that    |
+| are then displayed on the LCD display, also contains the open and   |
+| close string for the claw method for easier use                     |
+\*===================================================================*/
+const string autonOne = "Skills";
+const string autonTwo = "Red Right";
+const string autonThree = "Red Left";
+const string autonFour = "Blue Right";
+const string autonFive = "Blue Left";
+const string autonTest = "Test";
+string open = "open";
+string close = "close";
+
+/*===================================================================*\
+| LED.................................................................|
+|---------------------------------------------------------------------|
+| used in the 1010S task as an easy way to shut off all the           |
+| lights                                                              |
+\*===================================================================*/
+void lightEmittingDiode (int power){
+	SensorValue[LED1] = power;
+	SensorValue[LED2] = power;
+	SensorValue[LED3] = power;
+	SensorValue[LED4] = power;
+	SensorValue[LED5] = power;
+	SensorValue[LED6] = power;
+}
 
 void pre_auton()
 {
@@ -184,6 +229,210 @@ void LiftStop(int time)
 	wait1Msec(time);
 }
 
+/*------------------------------------------------------------------*\
+// 	 _     ___________
+//	| |   /  __ \  _  \
+//	| |   | /  \/ | | |
+//	| |   | |   | | | |
+//	| |___| \__/\ |/ /
+//	\_____/\____/___/
+\*------------------------------------------------------------------*/
+
+/*===================================================================*\
+| Display LCD.........................................................|
+|---------------------------------------------------------------------|
+| displays the current auton that is selcted on the LCD               |
+\*===================================================================*/
+void displayLCD(){
+	switch (myAutonomous)
+	{
+	case 0:
+		displayLCDCenteredString(0, autonOne);displayLCDCenteredString(1, "Selected");break;
+	case 1:
+		displayLCDCenteredString(0, autonTwo);displayLCDCenteredString(1, "Selected");break;
+	case 2:
+		displayLCDCenteredString(0, autonThree);displayLCDCenteredString(1, "Selected");break;
+	case 3:
+		displayLCDCenteredString(0, autonFour);displayLCDCenteredString(1, "Selected");break;
+	case 4:
+		displayLCDCenteredString(0, autonFive);displayLCDCenteredString(1, "Selected");break;
+	case 5:
+		displayLCDCenteredString(0, autonSix);displayLCDCenteredString(1, "Selected");break;
+	case 6;
+	}
+}
+
+
+/*===================================================================*\
+| Auton Setter........................................................|
+|---------------------------------------------------------------------|
+| sets the auton and shows the menu display to select an auton        |
+\*===================================================================*/
+void autoSetter (int value, bool select = false){
+	clearLCDLine(0);
+	clearLCDLine(1);
+	// saves auton in gloabal variable
+	if (select)
+		myAutonomous = value;
+
+	//displays set or select accordingly
+	if(myAutonomous == value)
+		displayLCDCenteredString(1, ">SET<");
+	else
+		displayLCDCenteredString(1, ">select<");
+
+	// shows auton names
+	switch(value)
+	{
+	case 0:
+		displayLCDCenteredString(0, autonOne); break;
+	case 1:
+		displayLCDCenteredString(0, autonTwo); break;
+	case 2:
+		displayLCDCenteredString(0, autonThree); break;
+	case 3:
+		displayLCDCenteredString(0, autonFour); break;
+	case 4:
+		displayLCDCenteredString(0, autonFive); break;
+	case 5:
+		displayLCDCenteredString(0, autonTest); break;
+	case 6;
+	}
+}
+
+/*===================================================================*\
+| Auton Selector......................................................|
+|---------------------------------------------------------------------|
+| the framework for being able to use the menu system on the LCD      |
+\*===================================================================*/
+void autoSelector(){
+	// sets choice to 0
+	int choice = 0;
+	autoSetter(0);
+
+	while (vexRT[Btn7U] != 1){
+		if ((vexRT[Btn7L] == 1) || (vexRT[Btn7R] == 1)){
+			// previous choice
+			if (vexRT[Btn7L] == 1){
+				if (--choice < 0){
+					choice = 9;
+				}
+			}
+			// next choice
+			if (vexRT[Btn7R] == 1){
+				if (++choice > 9){
+					choice = 0;
+				}
+			}
+			autoSetter(choice);
+		}
+
+		// select choice
+		if (vexRT[Btn7D] == 1)
+			autoSetter(choice, true);
+		wait1Msec(120);
+	}
+	wait1Msec(200);
+	return;
+}
+
+/*------------------------------------------------------------------*\
+//	 _____         _
+//	|_   _|       | |
+//	  | | __ _ ___| | _____
+//	  | |/ _` / __| |/ / __|
+//	  | | (_| \__ \   <\__ \
+//	  \_/\__,_|___/_|\_\___/
+\*------------------------------------------------------------------*/
+
+/*===================================================================*\
+| Battery Voltage.....................................................|
+|---------------------------------------------------------------------|
+| calculates and displays the current battery voltage on the LCD      |
+\*===================================================================*/
+task batteryVoltage () // source http://www.robotc.net/blog/2012/05/18/advanced-applications-with-the-vex-lcd/
+{
+	while(true)                                                  // An infinite loop to keep the program running until you terminate it
+	{
+		clearLCDLine(0);                                            // Clear line 1 (0) of the LCD
+		clearLCDLine(1);                                            // Clear line 2 (1) of the LCD
+
+		//Display the Primary Robot battery voltage
+		displayLCDString(0, 0, "Primary: ");
+		sprintf(mainBattery, "%1.2f%c", nImmediateBatteryLevel/1000.0,'V'); //Build the value to be displayed
+		displayNextLCDString(mainBattery);
+
+		//Display the Backup battery voltage
+		displayLCDString(1, 0, "Backup: ");
+		sprintf(backupBattery, "%1.2f%c", BackupBatteryLevel/1000.0, 'V');    //Build the value to be displayed
+		displayNextLCDString(backupBattery);
+
+		//Short delay for the LCD refresh rate
+		wait1Msec(100);
+	}
+	EndTimeSlice();
+}
+
+/*===================================================================*\
+| 1010S...............................................................|
+|---------------------------------------------------------------------|
+| makes our cortex look cool                                          |
+\*===================================================================*/
+task 1010S (){
+	while (true){
+		lightEmittingDiode (0);
+		SensorValue[LED1] = 1;
+		wait1Msec(150);
+		lightEmittingDiode (0);
+		SensorValue[LED2] = 1;
+		wait1Msec(150);
+		lightEmittingDiode (0);
+		SensorValue[LED3] = 1;
+		wait1Msec(150);
+		lightEmittingDiode (0);
+		SensorValue[LED4] = 1;
+		wait1Msec(150);
+		lightEmittingDiode (0);
+		SensorValue[LED5] = 1;
+		wait1Msec(150);
+		lightEmittingDiode (0);
+		SensorValue[LED6] = 1;
+		wait1Msec(150);
+		lightEmittingDiode (0);
+		SensorValue[LED7] = 1;
+		wait1Msec(150);
+		lightEmittingDiode (0);
+		SensorValue[LED6] = 1;
+		wait1Msec(150);
+	}
+	EndTimeSlice();
+}
+
+/*------------------------------------------------------------------*\
+//	___  ___      _     _ _        _____             _
+//	|  \/  |     | |   (_) |      |  __ \           | |
+//	| .  . | ___ | |__  _| | ___  | |  \/ ___   __ _| |
+//	| |\/| |/ _ \| '_ \| | |/ _ \ | | __ / _ \ / _` | |
+//	| |  | | (_) | |_) | | |  __/ | |_\ \ (_) | (_| | |
+//	\_|  |_/\___/|_.__/|_|_|\___|  \____/\___/ \__,_|_|
+\*------------------------------------------------------------------*/
+
+/*===================================================================*\
+| Red.................................................................|
+|---------------------------------------------------------------------|
+| Done: none                                                          |
+\*===================================================================*/
+void RedRight()
+{
+	char Red_Right;
+	startTask(TowerTask);
+	TowerPosition = 700;
+	wait1Msec(200);
+	Lift(-127, 1400);
+	LiftStop(10);
+	Move(127,
+
+
 
 
 /*---------------------------------------------------------------------------*/
@@ -219,7 +468,6 @@ task TowerTask()
 		}
 	}
 }
-
 
 
 task autonomous()
