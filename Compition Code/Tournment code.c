@@ -1,19 +1,21 @@
 #pragma config(Sensor, in1,    RTower,         sensorPotentiometer)
-#pragma config(Sensor, dgtl1,  REncouder,      sensorQuadEncoder)
-#pragma config(Sensor, dgtl3,  LEncouder,      sensorQuadEncoder)
+#pragma config(Sensor, in2,    Gyro,           sensorGyro)
+#pragma config(Sensor, dgtl1,  REncoder,       sensorQuadEncoder)
+#pragma config(Sensor, dgtl3,  LEncoder,       sensorQuadEncoder)
 #pragma config(Sensor, dgtl5,  LCD1,           sensorLEDtoVCC)
 #pragma config(Sensor, dgtl6,  LCD2,           sensorLEDtoVCC)
 #pragma config(Sensor, dgtl7,  LCD3,           sensorLEDtoVCC)
 #pragma config(Sensor, dgtl8,  LCD4,           sensorLEDtoVCC)
 #pragma config(Sensor, dgtl9,  LCD5,           sensorLEDtoVCC)
 #pragma config(Sensor, dgtl10, LCD6,           sensorLEDtoVCC)
+#pragma config(Sensor, dgtl11, Jump,           sensorDigitalIn)
 #pragma config(Motor,  port1,           RClaw,         tmotorVex393_HBridge, openLoop)
 #pragma config(Motor,  port2,           RFront,        tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           LFront,        tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port4,           RLift,         tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port5,           LLift,         tmotorVex393_MC29, openLoop, reversed)
-#pragma config(Motor,  port6,           Rback,         tmotorVex393_MC29, openLoop, reversed)
-#pragma config(Motor,  port7,           Lback,         tmotorVex393_MC29, openLoop)
+#pragma config(Motor,  port6,           RBack,         tmotorVex393_MC29, openLoop, reversed)
+#pragma config(Motor,  port7,           LBack,         tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port8,           LTower,        tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port9,           RTower,        tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port10,          LClaw,         tmotorVex393_HBridge, openLoop)
@@ -64,13 +66,16 @@ const string autonTwo = "Red Right 20";
 const string autonThree = "Red Left 20";
 const string autonFour = "Blue Right 20";
 const string autonFive = "Blue Left 20";
-const string autoSix = "Red Right 10";
-const string autoSeven = "Red Left 10";
-const string autoEight = "Blue Right 10";
-const string autoNine = "Blue Left 10"
+const string autonSix = "Red Right 10";
+const string autonSeven = "Red Left 10";
+const string autonEight = "Blue Right 10";
+const string autonNine = "Blue Left 10";
 const string autonTest = "Test";
 string open = "open";
 string close = "close";
+bool showBattery = false;
+string mainBattery, backupBattery;
+
 
 /*===================================================================*\
 | LED.................................................................|
@@ -85,22 +90,6 @@ void lightEmittingDiode (int power){
 	SensorValue[LED4] = power;
 	SensorValue[LED5] = power;
 	SensorValue[LED6] = power;
-}
-
-void pre_auton()
-{
-  // Set bStopTasksBetweenModes to false if you want to keep user created tasks
-  // running between Autonomous and Driver controlled modes. You will need to
-  // manage all user created tasks if set to false.
-  bStopTasksBetweenModes = true;
-
-	// Set bDisplayCompetitionStatusOnLcd to false if you don't want the LCD
-	// used by the competition include file, for example, you might want
-	// to display your team name on the LCD in this function.
-	// bDisplayCompetitionStatusOnLcd = false;
-
-  // All activities that occur before the competition starts
-  // Example: clearing encoders, setting servo positions, ...
 }
 
 /*------------------------------------------------------------------*\
@@ -119,8 +108,8 @@ void pre_auton()
 \*===================================================================*/
 void setDrive (){
 	// resets encoder values to 0
-	SensorValue(LeftEncoder) = 0;
-	SensorValue(RightEncoder) = 0;
+	SensorValue(LEncoder) = 0;
+	SensorValue(REncoder) = 0;
 }
 
 /*===================================================================*\
@@ -141,13 +130,13 @@ void setGyro (){
 void intSensor (){
 	// sets sensor type to none to start the full sensor reset
 	SensorType[Gyro] = sensorNone;
-	SensorType[LeftEncoder] = sensorNone;
-	SensorType[RightEncoder] = sensorNone;
+	SensorType[LEncoder] = sensorNone;
+	SensorType[REncoder] = sensorNone;
 	// waits 1 sec before setting all the sensors
 	wait1Msec(1000);
 	SensorType[Gyro] = sensorGyro;
-	SensorType[LeftEncoder] = sensorQuadEncoder;
-	SensorType[RightEncoder] = sensorQuadEncoder;
+	SensorType[LEncoder] = sensorQuadEncoder;
+	SensorType[REncoder] = sensorQuadEncoder;
 	// waits 2 seconds to let gyro initilize properly
 	// DO NOT MOVE WHILE THIS IS HAPPENING
 	wait1Msec(2000);
@@ -162,7 +151,7 @@ void intSensor (){
 void turnTime (int power, int time){
 	// sets the drive motors to turn using a set power
 	motor[RFront] = motor[RBack] = -power;
-	motor[LFront] motor[Lback] = power;
+	motor[LFront] = motor[LBack] = power;
 	// waits the set amout of mSec to carry out the method
 	wait1Msec(time);
 	stopDrive ();
@@ -185,8 +174,8 @@ void SetLeft(int power)
 \*===================================================================*/
 void setDrive (int power){
 	// resets encoder values to 0
-	SensorValue(REncouder) = 0;
-	SensorValue(LEncouder) = 0;
+	SensorValue(REncoder) = 0;
+	SensorValue(LEncoder) = 0;
 	motor[RFront] = motor[RBack] = motor[LFront] = motor[LBack] = power;
 }
 
@@ -242,12 +231,12 @@ void StopTower()
 \*===================================================================*/
 void Move(int power, int distance)
 {
-	SensorValue[LEncouder] = 0;
-	SensorValue[REncouder] = 0;
+	SensorValue[LEncoder] = 0;
+	SensorValue[REncoder] = 0;
 	float kp = 0.5;//proportional constant, can be tuned.
-	while(abs(SensorValue[REncouder]+SensorValue[LEncouder])/2 < distance)
+	while(abs(SensorValue[REncoder]+SensorValue[LEncoder])/2 < distance)
 		{
-			int error = SensorValue[LEncouder] - SensorValue[REncouder];
+			int error = SensorValue[LEncoder] - SensorValue[REncoder];
 			//find the difference between the two encoders.
 			SetLeft(power - error*kp);
 			SetRight(power + error*kp);
@@ -258,7 +247,7 @@ void Move(int power, int distance)
 
 void RightPointTurn(int distance)
 {
-		while(abs(SensorValue[LEncouder]) < distance)
+		while(abs(SensorValue[LEncoder]) < distance)
 	{
 		SetRight(-127);
 		SetLeft(127);
@@ -267,7 +256,7 @@ void RightPointTurn(int distance)
 }
 void LeftPointTurn(int distance)
 {
-		while(abs(SensorValue[REncouder])<distance)
+		while(abs(SensorValue[REncoder])<distance)
 	{
 		SetRight(127);
 		SetLeft(-127);
@@ -348,15 +337,15 @@ void displayLCD(){
 		displayLCDCenteredString(0, autonFive);displayLCDCenteredString(1, "Selected");break;
 	case 5:
 		displayLCDCenteredString(0, autonSix);displayLCDCenteredString(1, "Selected");break;
-	case 6;
+	case 6:
 		displayLCDCenteredString(0, autonSeven);displayLCDCenteredString(1, "Selected");break;
-	case 7;
+	case 7:
 		displayLCDCenteredString(0, autonEight);displayLCDCenteredString(1, "Selected");break;
-	case 8;
+	case 8:
 		displayLCDCenteredString(0, autonNine);displayLCDCenteredString(1, "Selected");break;
-	case 9;
+	case 9:
 		displayLCDCenteredString(0, autonTest);displayLCDCenteredString(1, "Selected");break;
-	case 10;
+	case 10:
 	}
 }
 
@@ -402,7 +391,7 @@ void autoSetter (int value, bool select = false){
 		displayLCDCenteredString(0, autonNine); break;
 	case 9:
 		displayLCDCenteredString(0, autonTest); break;
-	case 10;
+	case 10:
 	}
 }
 
@@ -505,12 +494,9 @@ task 1010S (){
 		SensorValue[LED6] = 1;
 		wait1Msec(150);
 		lightEmittingDiode (0);
-		SensorValue[LED7] = 1;
-		wait1Msec(150);
-		lightEmittingDiode (0);
 		SensorValue[LED6] = 1;
 		wait1Msec(150);
-				SensorValue[LED6] = 1;
+		SensorValue[LED6] = 1;
 		wait1Msec(150);
 		lightEmittingDiode (0);
 		SensorValue[LED5] = 1;
@@ -592,7 +578,7 @@ void RedRight10()
 	LeftPointTurn(130);
 	Move(127, 140);
 	TowerRise(300);
-	Lift(-127; 1200);
+	Lift(-127, 1200);
 	Move(-127, 180);
 	StopDrive(100);
 }
@@ -632,6 +618,32 @@ task TowerTask()
 	}
 }
 
+/*------------------------------------------------------------------*\
+//	______            ___        _
+//	| ___ \          / _ \      | |
+//	| |_/ / __ ___  / /_\ \_   _| |_ ___  _ __
+//	|  __/ '__/ _ \ |  _  | | | | __/ _ \| '_ \
+//	| |  | | |  __/ | | | | |_| | || (_) | | | |
+//	\_|  |_|  \___| \_| |_/\__,_|\__\___/|_| |_|
+\*------------------------------------------------------------------*/
+
+/*===================================================================*\
+| Pre Auton...........................................................|
+|---------------------------------------------------------------------|
+| resets sensors and starts the NightRider task                       |
+| DO NOT MOVE because of the gyro calibration                         |
+\*===================================================================*/
+void pre_auton(){
+	// starts NightRider task because its cool
+	startTask (1010S);
+	// set up LCD display
+	bLCDBacklight = true;
+	displayLCDCenteredString(0, "Do Not Move");
+	displayLCDCenteredString(1, "Calibrating");
+	// sensor set up
+	intSensor ();
+	setDrive ();
+}
 
 task autonomous()
 {
