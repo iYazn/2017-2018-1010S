@@ -1,6 +1,7 @@
 #pragma config(Sensor, in1,    Tower,          sensorPotentiometer)
 #pragma config(Sensor, dgtl1,  RightBase,      sensorQuadEncoder)
 #pragma config(Sensor, dgtl3,  LeftBase,       sensorQuadEncoder)
+#pragma config(Sensor, dgtl6,  ,               sensorLEDtoVCC)
 #pragma config(Motor,  port1,           RightBack,     tmotorVex393_HBridge, openLoop, reversed)
 #pragma config(Motor,  port2,           RightFront,    tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           LeftFront,     tmotorVex393_MC29, openLoop)
@@ -136,7 +137,7 @@ void LeftPointTurn(int distance)
 	}
 	SetBase(0);
 }
-/* void TowerRise(int power, int time)
+void TowerRise(int power, int time)
 {
 	motor[RTower] = motor[LTower]  = power;
 	wait1Msec(time);
@@ -151,7 +152,7 @@ void TowerStop(int time)
 	motor[RTower] = motor[LTower] = 0;
 	wait1Msec(time);
 }
-*/
+
 void Move(int power, int distance)
 {
 	SensorValue[LeftBase] = 0;
