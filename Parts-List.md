@@ -32,6 +32,6 @@ Sensors                | Quantity     | Serial Number(s)     | Comments
 **_Accelerometers_**   |              |                      |  Don't have
 **_Encoders_**         |       2      |                      |  shaft encoders
 **_Gyros_**            |              |                      |  Don't have
-**_Potentiometers_**   |              |                      |  Don't have
+**_Potentiometers_**   |       1       |                     |  
 **_Ultrasound_**       |              |                      |  Don't have
 
