@@ -1,14 +1,14 @@
 #pragma config(UART_Usage, UART1, uartVEXLCD, baudRate19200, IOPins, None, None)
 #pragma config(UART_Usage, UART2, uartNotUsed, baudRate4800, IOPins, None, None)
 #pragma config(Sensor, in1,    RTower,         sensorPotentiometer)
-#pragma config(Sensor, in2,    Gyro,           sensorGyro)
+#pragma config(Sensor, in8,    Gyro,           sensorGyro)
 #pragma config(Sensor, dgtl1,  REncoder,       sensorQuadEncoder)
 #pragma config(Sensor, dgtl3,  LEncoder,       sensorQuadEncoder)
 #pragma config(Motor,  port1,           RClaw,         tmotorVex393_HBridge, openLoop, reversed)
 #pragma config(Motor,  port2,           RFront,        tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           LFront,        tmotorVex393_MC29, openLoop)
-#pragma config(Motor,  port4,           RLift,         tmotorVex393_MC29, openLoop)
-#pragma config(Motor,  port5,           LLift,         tmotorVex393_MC29, openLoop, reversed)
+#pragma config(Motor,  port4,           RLift,         tmotorVex393_MC29, openLoop, reversed)
+#pragma config(Motor,  port5,           LLift,         tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port6,           RBack,         tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port7,           LBack,         tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port8,           LTower,        tmotorVex393_MC29, openLoop, reversed)
@@ -78,24 +78,24 @@ void autoselector(){
 		case 0:
 			//Display first choice
 			displayLCDCenteredString(0, "Right 20");
-			displayLCDCenteredString(1, "<		 Enter		>");
+			displayLCDCenteredString(1, "<		 Let's Go!		>");
 			waitForPress();
 			//Increment or decrement "count" based on button press
 			if(nLCDButtons == leftButton)
 			{
 				waitForRelease();
-				myauto = 3;
+				myauto = 4;
 			}
 			else if(nLCDButtons == rightButton)
 			{
 				waitForRelease();
-				myauto++;
+				myauto = 4;
 			}
 			break;
 		case 1:
 			//Display second choice
 			displayLCDCenteredString(0, "Left 20");
-			displayLCDCenteredString(1, "<		 Enter		>");
+			displayLCDCenteredString(1, "<		 Let's Go!		>");
 			waitForPress();
 			//Increment or decrement "count" based on button press
 			if(nLCDButtons == leftButton)
@@ -112,7 +112,7 @@ void autoselector(){
 		case 2:
 			//Display third choice
 			displayLCDCenteredString(0, "Right 10");
-			displayLCDCenteredString(1, "<		 Enter		>");
+			displayLCDCenteredString(1, "<		 Let's Go!		>");
 			waitForPress();
 			//Increment or decrement "count" based on button press
 			if(nLCDButtons == leftButton)
@@ -129,7 +129,7 @@ void autoselector(){
 		case 3:
 			//Display fourth choice
 			displayLCDCenteredString(0, "Left 10");
-			displayLCDCenteredString(1, "<		 Enter		>");
+			displayLCDCenteredString(1, "<		 Let's Go!		>");
 			waitForPress();
 			//Increment or decrement "count" based on button press
 			if(nLCDButtons == leftButton)
@@ -146,7 +146,7 @@ void autoselector(){
 		case 4:
 			//Display fourth choice
 			displayLCDCenteredString(0, "Skill");
-			displayLCDCenteredString(1, "<		 Enter		>");
+			displayLCDCenteredString(1, "<		 Let's Go!		>");
 			waitForPress();
 			//Increment or decrement "count" based on button press
 			if(nLCDButtons == leftButton)
@@ -163,9 +163,10 @@ void autoselector(){
 		default:
 			myauto = 0;
 			break;
-		}
-		}
-	}
+		} // end switch
+		} // end while
+	} // void autoselector()
+
 void intSensor (){
 			SensorType[Gyro] = sensorNone;
 		SensorType[LEncoder] = sensorNone;
@@ -292,7 +293,7 @@ void intSensor (){
 
 	void TowerRise(int position)
 	{
-		while(SensorValue[RTower] < position)
+		while(SensorValue[RTower] <= position)
 		{
 			motor[RTower] = motor[LTower]  = 127;
 		}
@@ -302,7 +303,7 @@ void intSensor (){
 
 	void TowerDown(int position)
 	{
-		while(SensorValue[RTower] > position)
+		while(SensorValue[RTower] >= position)
 		{
 			motor[RTower] = motor[LTower]  = -127;
 		}
@@ -328,11 +329,11 @@ void intSensor (){
 	}
 
 	void driveTower(){
-		if(vexRT[Btn5U] ==1)
+		if(vexRT[Btn5UXmtr2] ==1)
 		{
 			motor[RTower] = motor[LTower] = 127;
 		}
-		else if(vexRT[Btn5D] == 1)
+		else if(vexRT[Btn5DXmtr2] == 1)
 		{
 			motor[RTower] = motor[LTower] = -127;
 		}
@@ -358,7 +359,7 @@ void intSensor (){
 	}
 
 	void driveClaw(){
-		motor[LClaw] = motor[RClaw] = vexRT(Ch3);
+		motor[LClaw] = motor[RClaw] = vexRT(Ch3Xmtr2);
 	}
 
 	void pre_auton()
@@ -418,25 +419,24 @@ void intSensor (){
 			displayLCDCenteredString(0, "Right 20");
 			displayLCDCenteredString(1, "Let's Go!");
 			wait1Msec(100);// Robot waits for 100 milliseconds
-			startTask(TowerTask);
-			TowerPosition = 700;
-			wait1Msec(200);
-			Lift(127, 1300);
-			Move(127, 600);
+			TowerRise(300);
+			StopTower();
+			/*Lift(127, 1300);
+			Move(127, 800);
 			StopDrive();
 			Lift(127, 1400);
 			Claw(80, 230);
 			TowerDown(0);
 			Claw(-127, 200);
-			Move(-127, -400);
+			Move(-127, -600);
 			LeftPointTurn(600);
-			Move(127, 120);
+			Move(127, 200);
 			LeftPointTurn(455);
 			TowerRise(300);
 			Move(127, 120);
 			Lift(-127, 1100);
 			Move(-127, 100);
-			StopDrive();
+			StopDrive();*/
 			break;
 
 		case 1:
@@ -464,7 +464,7 @@ void intSensor (){
 			break;
 
 		case 4:
-			//If count = 4, run the code correspoinding with choice 5
+			//If myauto = 4, run the code correspoinding with choice 5
 			displayLCDCenteredString(0, "Skill");
 			displayLCDCenteredString(1, "Let's Go!");
 			wait1Msec(100);// Robot waits for 100 milliseconds
