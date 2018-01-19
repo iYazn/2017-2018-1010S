@@ -7,8 +7,8 @@
 #pragma config(Motor,  port1,           RClaw,         tmotorVex393_HBridge, openLoop, reversed)
 #pragma config(Motor,  port2,           RFront,        tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           LFront,        tmotorVex393_MC29, openLoop)
-#pragma config(Motor,  port4,           RLift,         tmotorVex393_MC29, openLoop, reversed)
-#pragma config(Motor,  port5,           LLift,         tmotorVex393_MC29, openLoop)
+#pragma config(Motor,  port4,           RLift,         tmotorVex393_MC29, openLoop)
+#pragma config(Motor,  port5,           LLift,         tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port6,           RBack,         tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port7,           LBack,         tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port8,           LTower,        tmotorVex393_MC29, openLoop, reversed)
@@ -44,203 +44,97 @@
 int myauto = 1;
 
 
-
 const short leftButton = 1;
-
 const short centerButton = 2;
-
-const short rightButton = 4;
-
-
-
-
+const short rightButton = 5;
 
 void autoselector(){
-
 		clearLCDLine(0);
-
     clearLCDLine(1);
-
     bLCDBacklight = true;
-
 		while(bIfiRobotDisabled){
-
 			switch(myauto){
-
 				case(1):
-
 					displayLCDCenteredString(0, "Right 20");
-
 					displayLCDCenteredString(1, "1010S");
-
 						if(nLCDButtons == leftButton){
-
 							while(nLCDButtons != 0){}
-
 							wait1Msec(5);
-
 							myauto = 1;
-
 							}
-
 						else if(nLCDButtons == rightButton){
-
 							while(nLCDButtons != 0){}
-
 							wait1Msec(5);
-
 							myauto = 2;
-
 						}
-
 						else{}
-
 				break;
-
 				case(2):
-
 					displayLCDCenteredString(0, "Left 20");
-
 					displayLCDCenteredString(1, "1010S");
-
-
-
 					if(nLCDButtons == leftButton){
-
 						while(nLCDButtons != 0){}
-
 						wait1Msec(5);
-
 						myauto = 1;
-
 						}
-
 					else if(nLCDButtons == rightButton){
-
 						while(nLCDButtons != 0){}
-
 						wait1Msec(5);
-
 						myauto = 3;
-
 						}
-
 					else{}
-
 				break;
-
 				case(3):
-
 					displayLCDCenteredString(0, "Right 10");
-
 					displayLCDCenteredString(1, "1010S");
-
-
-
 					if(nLCDButtons == leftButton){
-
 						while(nLCDButtons != 0){}
-
 						wait1Msec(5);
-
 						myauto = 2;
-
 						}
-
 					else if(nLCDButtons == rightButton){
-
 						while(nLCDButtons != 0){}
-
 						wait1Msec(5);
-
 						myauto = 4;
-
 						}
-
 					else{}
-
 				break;
-
 				case(4):
-
 					displayLCDCenteredString(0, "Left 10");
-
 					displayLCDCenteredString(1, "1010S");
-
-
-
 					if(nLCDButtons == leftButton){
-
 						while(nLCDButtons != 0){}
-
 						wait1Msec(5);
-
 						myauto = 3;
-
 						}
-
 					else if(nLCDButtons == rightButton){
-
 						while(nLCDButtons != 0){}
-
 						wait1Msec(5);
-
-						myauto = 4;
-
-						}
-
-					else{}
-
-				break;
-
-				case(5):
-
-					displayLCDCenteredString(0, "Skill");
-
-					displayLCDCenteredString(1, "1010S");
-
-
-
-					if(nLCDButtons == leftButton){
-
-						while(nLCDButtons != 0){}
-
-						wait1Msec(5);
-
-						myauto = 3;
-
-						}
-
-					else if(nLCDButtons == rightButton){
-
-						while(nLCDButtons != 0){}
-
-						wait1Msec(5);
-
 						myauto = 5;
-
 						}
-
 					else{}
-
 				break;
-
-
-
+				case(5):
+					displayLCDCenteredString(0, "Skill");
+					displayLCDCenteredString(1, "1010S");
+					if(nLCDButtons == leftButton){
+						while(nLCDButtons != 0){}
+						wait1Msec(5);
+						myauto = 4;
+						}
+					else if(nLCDButtons == rightButton){
+						while(nLCDButtons != 0){}
+						wait1Msec(5);
+						myauto = 5;
+						}
+					else{}
 				break;
-
-
-
+				break;
 				default:
-
 					myauto = 1;
-
 				break;
-
 				}
-
 			}
-
 }
 
 void pre_auton()
@@ -260,15 +154,6 @@ void pre_auton()
 	// DO NOT MOVE WHILE THIS IS HAPPENING
 	wait1Msec(2000);
 	autoselector();
-}
-
-void turnTime (int power, int time){
-	// sets the drive motors to turn using a set power
-	motor[RFront] = motor[RBack] = -power;
-	motor[LFront] = motor[LBack] = power;
-	// waits the set amout of mSec to carry out the method
-	wait1Msec(time);
-	stopDrive ();
 }
 
 //set sensors to zero.
@@ -298,7 +183,7 @@ void SetLeft(int power)
 
 void StopDrive()
 {
-	motor[RFront] = motor[LFront] = motor[RBack] = motor[LBack] = 0
+	motor[RFront] = motor[LFront] = motor[RBack] = motor[LBack] = 0;
 }
 
 void StopLift()
@@ -328,8 +213,7 @@ void Move(int power, int distance)
 			SetLeft(power - error*kp);
 			SetRight(power + error*kp);
 		}//end while
-		SetRight(0);
-		SetLeft(0);
+		setDrive();
 	}// end MoveForward
 
 void gyroturnL(int power, int gyrovalue){
@@ -374,7 +258,7 @@ void RightPointTurn(int distance)
 		SetRight(-127);
 		SetLeft(127);
 	}
-	SetDrive(0);
+	SetDrive();
 }
 void LeftPointTurn(int distance)
 {
@@ -383,7 +267,7 @@ void LeftPointTurn(int distance)
 		SetRight(127);
 		SetLeft(-127);
 	}
-	SetDrive(0);
+	SetDrive();
 }
 
 void TowerRise(int position)
@@ -398,7 +282,7 @@ void TowerRise(int position)
 
 void TowerDown(int position)
 {
-while(SensorValue[RTower] > position;
+	while(SensorValue[RTower] > position)
 	{
 	motor[RTower] = motor[LTower]  = -127;
 	}
@@ -417,6 +301,46 @@ void Claw(int power, int time)
 	motor[RClaw] = motor[LClaw] = power;
 	wait1Msec(time);
 }
+
+void driveBase(){
+		motor[RFront] = motor[RBack] = vexRT(Ch2) - vexRT(Ch1);//combine Right Motors all forward.
+		motor[LBack] = motor[LFront] = vexRT(Ch2) + vexRT(Ch1);//combine Left Motors all forward.
+	}
+
+void driveTower(){
+			if(vexRT[Btn5U] ==1)
+		{
+			motor[RTower] = motor[LTower] = 127;
+		}
+		else if(vexRT[Btn5D] == 1)
+		{
+			motor[RTower] = motor[LTower] = -127;
+		}
+		else
+		{
+			motor[RTower] = motor[LTower] = 0;
+		}
+	}
+
+void driveLift(){
+			if(vexRT[Btn6U] == 1)
+		{
+			motor[RLift] = motor[LLift] = 127;
+		}
+		else if(vexRT[Btn6D] == 1)
+		{
+			motor[RLift] = motor[LLift] = -127;
+		}
+		else
+		{
+			motor[RLift] = motor[LLift] = 0;
+		}
+	}
+
+void driveClaw(){
+	motor[LClaw] = motor[RClaw] = vexRT(Ch3);
+}
+
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
@@ -489,6 +413,7 @@ task autonomous()
 		case 5:
 
 		break;
+	}
   // ..........................................................................
   // Insert user code here.
   // ..........................................................................
@@ -513,33 +438,10 @@ task usercontrol()
 
   while (true)
   {
-  	motor[RFront] = motor[RBack] = vexRT(Ch2) - vexRT(Ch1);//combine Right Motors all forward.
-		motor[LBack] = motor[LFront] = vexRT(Ch2) + vexRT(Ch1);//combine Left Motors all forward.
-		motor[LClaw] = motor[RClaw] = vexRT(Ch3)
-		if(vexRT[Btn6U] == 1)
-		{
-			motor[RLift] = motor[LLift] = 127;
-		}
-		else if(vexRT[Btn6D] == 1)
-		{
-			motor[RLift] = motor[LLift] = -127;
-		}
-		else
-		{
-			motor[RLift] = motor[LLift] = 0;
-		}
-		if(vexRT[Btn5U] ==1)
-		{
-			motor[RTower] = motor[LTower] = 127;
-		}
-		else if(vexRT[Btn5D] == 1)
-		{
-			motor[RTower] = motor[LTower] = -127;
-		}
-		else
-		{
-			motor[RTower] = motor[LTower] = 0;
-		}
+
+
+
+
     // This is the main execution loop for the user control program.
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
