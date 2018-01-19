@@ -275,21 +275,19 @@ void intSensor (){
 		wait1Msec(10);
 	}
 
-	void RightPointTurn(int distance)
+	void RightPointTurn(int time)
 	{
-		while(abs(SensorValue[LEncoder]) < distance)
-		{
 			SetRight(-127);
 			SetLeft(127);
+			wait1Msec(time);
 		}
 		SetDrive();
 	}
 	void LeftPointTurn(int distance)
 	{
-		while(abs(SensorValue[REncoder])<distance)
-		{
 			SetRight(127);
 			SetLeft(-127);
+			wait1Msec(time);
 		}
 		SetDrive();
 	}
@@ -422,9 +420,25 @@ void intSensor (){
 			displayLCDCenteredString(0, "Right 20");
 			displayLCDCenteredString(1, "Let's Go!");
 			wait1Msec(100);// Robot waits for 100 milliseconds
+			startTask(TowerTask);
+			TowerPosition = 700;
+			wait1Msec(200);
+			Lift(127, 1300);
 			Move(127, 600);
+			StopDrive();
+			Lift(127, 1400);
+			Claw(80, 230);
+			TowerDown(0);
+			Claw(-127, 200);
+			Move(-127, -400);
+			LeftPointTurn(600);
+			Move(127, 120);
+			LeftPointTurn(455);
 			TowerRise(300);
-
+			Move(127, 120);
+			Lift(-127, 1100);
+			Move(-127, 100);
+			StopDrive();
 			break;
 
 		case 1:
@@ -490,7 +504,7 @@ void intSensor (){
 		while (true)
 		{
 			displayLCDCenteredString(0, "Once more");
-			displayLCDCenteredString(1, "into the fray");
+			displayLCDCenteredString(1, "into the zone");
 			driveBase();
 			driveClaw();
 			driveLift();
