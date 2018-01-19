@@ -211,19 +211,22 @@ void intSensor (){
 		motor[RFront] = motor[LFront] = motor[RBack] = motor[LBack] = 0;
 	}
 
-	void StopLift()
+	void StopLift(int time)
 	{
 		motor[RLift] = motor[LLift] = 0;
+		wait1Msec(time);
 	}
 
-	void StopTower()
+	void StopTower(int time)
 	{
 		motor[RTower] = motor[LTower] = 0;
+		wait1Msec(time);
 	}
 
-	void StopClaw(int power, int time)
+	void StopClaw(int time)
 	{
 		motor[RClaw] = motor[LClaw] = 0;
+		wait1Msec(time);
 	}
 
 	void Move(int power, int distance)
@@ -291,7 +294,7 @@ void intSensor (){
 			setDrive();
 	}
 
-	void TowerRise(int position)
+	/*void TowerRise(int position)
 	{
 		while(SensorValue[RTower] <= position)
 		{
@@ -309,6 +312,18 @@ void intSensor (){
 		}
 
 		motor[RTower] = motor[LTower] = 0;
+	}
+*/
+	void TowerRise(int power, int time)
+	{
+		motor[RTower] = motor[LTower] = power;
+		wait1Msec(time);
+	}
+
+	void TowerDown(int power, int time)
+	{
+		motor[RTower] = motor[LTower] = -power;
+		wait1Msec(time);
 	}
 
 	void Lift(int power, int time)
@@ -419,8 +434,19 @@ void intSensor (){
 			displayLCDCenteredString(0, "Right 20");
 			displayLCDCenteredString(1, "Let's Go!");
 			wait1Msec(100);// Robot waits for 100 milliseconds
-			TowerRise(300);
-			StopTower();
+			TowerRise(127, 1200);
+			StopTower(10);
+			Lift(127, 1200);
+			Move(127, 800);
+			StopDrive(10);
+			Lift(-127, 1200);
+			StopLift(10);
+			TowerDown(127, 300);
+			LeftPointTurn(600);
+			Move(127, 200);
+
+
+
 			/*Lift(127, 1300);
 			Move(127, 800);
 			StopDrive();
@@ -440,7 +466,7 @@ void intSensor (){
 			break;
 
 		case 1:
-			//If count = 1, run the code correspoinding with choice 2
+			//If myauto = 1, run the code correspoinding with choice 2
 			displayLCDCenteredString(0, "Left 20");
 			displayLCDCenteredString(1, "Let's Go!");
 			wait1Msec(100);// Robot waits for 100 milliseconds
