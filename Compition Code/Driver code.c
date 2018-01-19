@@ -1,9 +1,9 @@
+#pragma config(UART_Usage, UART1, uartVEXLCD, baudRate19200, IOPins, None, None)
+#pragma config(UART_Usage, UART2, uartNotUsed, baudRate4800, IOPins, None, None)
 #pragma config(Sensor, in1,    RTower,         sensorPotentiometer)
 #pragma config(Sensor, in2,    Gyro,           sensorGyro)
 #pragma config(Sensor, dgtl1,  REncoder,       sensorQuadEncoder)
 #pragma config(Sensor, dgtl3,  LEncoder,       sensorQuadEncoder)
-#pragma config(Sensor, dgtl5,  LCD1,           sensorLEDtoVCC)
-#pragma config(Sensor, dgtl6,  LCD2,           sensorLEDtoVCC)
 #pragma config(Motor,  port1,           RClaw,         tmotorVex393_HBridge, openLoop, reversed)
 #pragma config(Motor,  port2,           RFront,        tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           LFront,        tmotorVex393_MC29, openLoop)
@@ -41,172 +41,202 @@
 /*  not every time that the robot is disabled.                               */
 /*---------------------------------------------------------------------------*/
 
-int myauto = 1;
-
 
 const short leftButton = 1;
 const short centerButton = 2;
 const short rightButton = 5;
 
+//Wait for Press--------------------------------------------------
+void waitForPress()
+{
+	while(nLCDButtons == 0){}
+	wait1Msec(5);
+}
+//----------------------------------------------------------------
+
+//Wait for Release------------------------------------------------
+void waitForRelease()
+{
+	while(nLCDButtons != 0){}
+	wait1Msec(5);
+}
+//----------------------------------------------------------------
+
 void autoselector(){
-		clearLCDLine(0);
-    clearLCDLine(1);
-    bLCDBacklight = true;
-		while(bIfiRobotDisabled){
-			switch(myauto){
-				case(1):
-					displayLCDCenteredString(0, "Right 20");
-					displayLCDCenteredString(1, "1010S");
-						if(nLCDButtons == leftButton){
-							while(nLCDButtons != 0){}
-							wait1Msec(5);
-							myauto = 1;
-							}
-						else if(nLCDButtons == rightButton){
-							while(nLCDButtons != 0){}
-							wait1Msec(5);
-							myauto = 2;
-						}
-						else{}
-				break;
-				case(2):
-					displayLCDCenteredString(0, "Left 20");
-					displayLCDCenteredString(1, "1010S");
-					if(nLCDButtons == leftButton){
-						while(nLCDButtons != 0){}
-						wait1Msec(5);
-						myauto = 1;
-						}
-					else if(nLCDButtons == rightButton){
-						while(nLCDButtons != 0){}
-						wait1Msec(5);
-						myauto = 3;
-						}
-					else{}
-				break;
-				case(3):
-					displayLCDCenteredString(0, "Right 10");
-					displayLCDCenteredString(1, "1010S");
-					if(nLCDButtons == leftButton){
-						while(nLCDButtons != 0){}
-						wait1Msec(5);
-						myauto = 2;
-						}
-					else if(nLCDButtons == rightButton){
-						while(nLCDButtons != 0){}
-						wait1Msec(5);
-						myauto = 4;
-						}
-					else{}
-				break;
-				case(4):
-					displayLCDCenteredString(0, "Left 10");
-					displayLCDCenteredString(1, "1010S");
-					if(nLCDButtons == leftButton){
-						while(nLCDButtons != 0){}
-						wait1Msec(5);
-						myauto = 3;
-						}
-					else if(nLCDButtons == rightButton){
-						while(nLCDButtons != 0){}
-						wait1Msec(5);
-						myauto = 5;
-						}
-					else{}
-				break;
-				case(5):
-					displayLCDCenteredString(0, "Skill");
-					displayLCDCenteredString(1, "1010S");
-					if(nLCDButtons == leftButton){
-						while(nLCDButtons != 0){}
-						wait1Msec(5);
-						myauto = 4;
-						}
-					else if(nLCDButtons == rightButton){
-						while(nLCDButtons != 0){}
-						wait1Msec(5);
-						myauto = 5;
-						}
-					else{}
-				break;
-				break;
-				default:
-					myauto = 1;
-				break;
-				}
+
+	//Declare count variable to keep track of our choice
+	int myauto = 0;
+	//------------- Beginning of User Interface Code ---------------
+	//Clear LCD
+	clearLCDLine(0);
+	clearLCDLine(1);
+	//Loop while center button is not pressed
+	while(nLCDButtons != centerButton)
+	{
+		//Switch case that allows the user to choose from 5 different options
+		switch(myauto){
+		case 0:
+			//Display first choice
+			displayLCDCenteredString(0, "Right 20");
+			displayLCDCenteredString(1, "<		 Enter		>");
+			waitForPress();
+			//Increment or decrement "count" based on button press
+			if(nLCDButtons == leftButton)
+			{
+				waitForRelease();
+				myauto = 3;
 			}
-}
+			else if(nLCDButtons == rightButton)
+			{
+				waitForRelease();
+				myauto++;
+			}
+			break;
+		case 1:
+			//Display second choice
+			displayLCDCenteredString(0, "Left 20");
+			displayLCDCenteredString(1, "<		 Enter		>");
+			waitForPress();
+			//Increment or decrement "count" based on button press
+			if(nLCDButtons == leftButton)
+			{
+				waitForRelease();
+				myauto--;
+			}
+			else if(nLCDButtons == rightButton)
+			{
+				waitForRelease();
+				myauto++;
+			}
+			break;
+		case 2:
+			//Display third choice
+			displayLCDCenteredString(0, "Right 10");
+			displayLCDCenteredString(1, "<		 Enter		>");
+			waitForPress();
+			//Increment or decrement "count" based on button press
+			if(nLCDButtons == leftButton)
+			{
+				waitForRelease();
+				myauto--;
+			}
+			else if(nLCDButtons == rightButton)
+			{
+				waitForRelease();
+				myauto++;
+			}
+			break;
+		case 3:
+			//Display fourth choice
+			displayLCDCenteredString(0, "Left 10");
+			displayLCDCenteredString(1, "<		 Enter		>");
+			waitForPress();
+			//Increment or decrement "count" based on button press
+			if(nLCDButtons == leftButton)
+			{
+				waitForRelease();
+				myauto--;
+			}
+			else if(nLCDButtons == rightButton)
+			{
+				waitForRelease();
+				myauto++;
+			}
+			break;
+		case 3:
+			//Display fourth choice
+			displayLCDCenteredString(0, "Skill");
+			displayLCDCenteredString(1, "<		 Enter		>");
+			waitForPress();
+			//Increment or decrement "count" based on button press
+			if(nLCDButtons == leftButton)
+			{
+				waitForRelease();
+				myauto--;
+			}
+			else if(nLCDButtons == rightButton)
+			{
+				waitForRelease();
+				myauto = 0;
+			}
+			break;
+		default:
+			myauto = 0;
+			break;
+		}
+		}
+	}
 
-void pre_auton()
+	void pre_auton()
 
-{
-	bStopTasksBetweenModes = true;
-	bDisplayCompetitionStatusOnLcd = false;
-	SensorType[Gyro] = sensorNone;
-	SensorType[LEncoder] = sensorNone;
-	SensorType[REncoder] = sensorNone;
-	// waits 1 sec before setting all the sensors
-	wait1Msec(1000);
-	SensorType[Gyro] = sensorGyro;
-	SensorType[LEncoder] = sensorQuadEncoder;
-	SensorType[REncoder] = sensorQuadEncoder;
-	// waits 2 seconds to let gyro initilize properly
-	// DO NOT MOVE WHILE THIS IS HAPPENING
-	wait1Msec(2000);
-	autoselector();
-}
+	{
+		bStopTasksBetweenModes = true;
+		bDisplayCompetitionStatusOnLcd = false;
+		SensorType[Gyro] = sensorNone;
+		SensorType[LEncoder] = sensorNone;
+		SensorType[REncoder] = sensorNone;
+		// waits 1 sec before setting all the sensors
+		wait1Msec(1000);
+		SensorType[Gyro] = sensorGyro;
+		SensorType[LEncoder] = sensorQuadEncoder;
+		SensorType[REncoder] = sensorQuadEncoder;
+		// waits 2 seconds to let gyro initilize properly
+		// DO NOT MOVE WHILE THIS IS HAPPENING
+		wait1Msec(2000);
+		autoselector();
+	}
 
-//set sensors to zero.
-void setDrive ()
-{
-	// resets encoder values to 0
-	SensorValue(LEncoder) = 0;
-	SensorValue(REncoder) = 0;
-}
+	//set sensors to zero.
+	void setDrive ()
+	{
+		// resets encoder values to 0
+		SensorValue(LEncoder) = 0;
+		SensorValue(REncoder) = 0;
+	}
 
-void setGyro ()
-{
-	// resets the gyro value to 0
-	SensorValue(Gyro) = 0;
-}
+	void setGyro ()
+	{
+		// resets the gyro value to 0
+		SensorValue(Gyro) = 0;
+	}
 
-//combine motors together
-void SetRight(int power)
-{
-	motor[RFront] = motor[RBack] = power;
-}
+	//combine motors together
+	void SetRight(int power)
+	{
+		motor[RFront] = motor[RBack] = power;
+	}
 
-void SetLeft(int power)
-{
-	motor[LFront] = motor[LBack] = power;
-}
+	void SetLeft(int power)
+	{
+		motor[LFront] = motor[LBack] = power;
+	}
 
-void StopDrive()
-{
-	motor[RFront] = motor[LFront] = motor[RBack] = motor[LBack] = 0;
-}
+	void StopDrive()
+	{
+		motor[RFront] = motor[LFront] = motor[RBack] = motor[LBack] = 0;
+	}
 
-void StopLift()
-{
-	motor[RLift] = motor[LLift] = 0;
-}
+	void StopLift()
+	{
+		motor[RLift] = motor[LLift] = 0;
+	}
 
-void StopTower()
-{
-	motor[RTower] = motor[LTower] = 0;
-}
+	void StopTower()
+	{
+		motor[RTower] = motor[LTower] = 0;
+	}
 
-void StopClaw(int power, int time)
-{
-	motor[RClaw] = motor[LClaw] = 0;
-}
+	void StopClaw(int power, int time)
+	{
+		motor[RClaw] = motor[LClaw] = 0;
+	}
 
-void Move(int power, int distance)
-{
-	SensorValue[LEncoder] = 0;
-	SensorValue[REncoder] = 0;
-	float kp = 0.5;//proportional constant, can be tuned.
-	while(abs(SensorValue[REncoder]+SensorValue[LEncoder])/2 < distance)
+	void Move(int power, int distance)
+	{
+		SensorValue[LEncoder] = 0;
+		SensorValue[REncoder] = 0;
+		float kp = 0.5;//proportional constant, can be tuned.
+		while(abs(SensorValue[REncoder]+SensorValue[LEncoder])/2 < distance)
 		{
 			int error = SensorValue[LEncoder] - SensorValue[REncoder];
 			//find the difference between the two encoders.
@@ -216,99 +246,99 @@ void Move(int power, int distance)
 		setDrive();
 	}// end MoveForward
 
-void gyroturnL(int power, int gyrovalue){
+	void gyroturnL(int power, int gyrovalue){
 
-	SensorValue[Gyro] = 0;
+		SensorValue[Gyro] = 0;
 
-	while (SensorValue[Gyro] >= gyrovalue)
-{
+		while (SensorValue[Gyro] >= gyrovalue)
+		{
 
-		motor[RFront] = motor[RBack] = -power;
+			motor[RFront] = motor[RBack] = -power;
 
-		motor[LFront] = motor[LBack] = power;
+			motor[LFront] = motor[LBack] = power;
 
+		}
+
+		motor[RFront] = motor[RBack] = motor[LFront] = motor[LBack] = 0;
+
+		wait1Msec(10);
 	}
 
-	motor[RFront] = motor[RBack] = motor[LFront] = motor[LBack] = 0;
+	void gyroturnR(int power, int gyrovalue){
+		SensorValue[Gyro] = 0;
 
-	wait1Msec(10);
-}
+		while (SensorValue[Gyro] >= gyrovalue)
+		{
 
-void gyroturnR(int power, int gyrovalue){
-	SensorValue[Gyro] = 0;
+			motor[RFront] = motor[RBack] = power;
 
-	while (SensorValue[Gyro] >= gyrovalue)
-{
+			motor[LFront] = motor[LBack] = -power;
 
-		motor[RFront] = motor[RBack] = power;
+		}
 
-		motor[LFront] = motor[LBack] = -power;
+		motor[RFront] = motor[RBack] = motor[LFront] = motor[LBack] = 0;
 
+		wait1Msec(10);
 	}
 
-	motor[RFront] = motor[RBack] = motor[LFront] = motor[LBack] = 0;
-
-	wait1Msec(10);
-}
-
-void RightPointTurn(int distance)
-{
+	void RightPointTurn(int distance)
+	{
 		while(abs(SensorValue[LEncoder]) < distance)
-	{
-		SetRight(-127);
-		SetLeft(127);
+		{
+			SetRight(-127);
+			SetLeft(127);
+		}
+		SetDrive();
 	}
-	SetDrive();
-}
-void LeftPointTurn(int distance)
-{
+	void LeftPointTurn(int distance)
+	{
 		while(abs(SensorValue[REncoder])<distance)
-	{
-		SetRight(127);
-		SetLeft(-127);
-	}
-	SetDrive();
-}
-
-void TowerRise(int position)
-{
-	while(SensorValue[RTower] < position;
-	{
-	motor[RTower] = motor[LTower]  = 127;
+		{
+			SetRight(127);
+			SetLeft(-127);
+		}
+		SetDrive();
 	}
 
-	motor[RTower] = motor[LTower] = 0;
-}
-
-void TowerDown(int position)
-{
-	while(SensorValue[RTower] > position)
+	void TowerRise(int position)
 	{
-	motor[RTower] = motor[LTower]  = -127;
+		while(SensorValue[RTower] < position;
+		{
+			motor[RTower] = motor[LTower]  = 127;
+		}
+
+		motor[RTower] = motor[LTower] = 0;
 	}
 
-	motor[RTower] = motor[LTower] = 0;
-}
+	void TowerDown(int position)
+	{
+		while(SensorValue[RTower] > position)
+		{
+			motor[RTower] = motor[LTower]  = -127;
+		}
 
-void Lift(int power, int time)
-{
-	motor[RLift] = motor[LLift] = power;
-	wait1Msec(time);
-}
+		motor[RTower] = motor[LTower] = 0;
+	}
 
-void Claw(int power, int time)
-{
-	motor[RClaw] = motor[LClaw] = power;
-	wait1Msec(time);
-}
+	void Lift(int power, int time)
+	{
+		motor[RLift] = motor[LLift] = power;
+		wait1Msec(time);
+	}
 
-void driveBase(){
+	void Claw(int power, int time)
+	{
+		motor[RClaw] = motor[LClaw] = power;
+		wait1Msec(time);
+	}
+
+	void driveBase(){
 		motor[RFront] = motor[RBack] = vexRT(Ch2) - vexRT(Ch1);//combine Right Motors all forward.
 		motor[LBack] = motor[LFront] = vexRT(Ch2) + vexRT(Ch1);//combine Left Motors all forward.
 	}
 
-void driveTower(){
-			if(vexRT[Btn5U] ==1)
+	void driveTower(){
+		if(vexRT[Btn5U] ==1)
 		{
 			motor[RTower] = motor[LTower] = 127;
 		}
@@ -322,8 +352,8 @@ void driveTower(){
 		}
 	}
 
-void driveLift(){
-			if(vexRT[Btn6U] == 1)
+	void driveLift(){
+		if(vexRT[Btn6U] == 1)
 		{
 			motor[RLift] = motor[LLift] = 127;
 		}
@@ -337,121 +367,137 @@ void driveLift(){
 		}
 	}
 
-void driveClaw(){
-	motor[LClaw] = motor[RClaw] = vexRT(Ch3);
-}
+	void driveClaw(){
+		motor[LClaw] = motor[RClaw] = vexRT(Ch3);
+	}
 
 
-/*---------------------------------------------------------------------------*/
-/*                                                                           */
-/*                              Autonomous Task                              */
-/*                                                                           */
-/*  This task is used to control your robot during the autonomous phase of   */
-/*  a VEX Competition.                                                       */
-/*                                                                           */
-/*  You must modify the code to add your own robot specific commands here.   */
-/*---------------------------------------------------------------------------*/
+	/*---------------------------------------------------------------------------*/
+	/*                                                                           */
+	/*                              Autonomous Task                              */
+	/*                                                                           */
+	/*  This task is used to control your robot during the autonomous phase of   */
+	/*  a VEX Competition.                                                       */
+	/*                                                                           */
+	/*  You must modify the code to add your own robot specific commands here.   */
+	/*---------------------------------------------------------------------------*/
 
-int TowerHold = 1; //Tower loop flag
-int TowerPosition = 0; // Position to set the tower
+	int TowerHold = 1; //Tower loop flag
+	int TowerPosition = 0; // Position to set the tower
 
-task TowerTask()
-{
-	TowerPosition = SensorValue[RTower];
-	while(true)
+	task TowerTask()
 	{
-		if(TowerHold)//should tower code be running?
+		TowerPosition = SensorValue[RTower];
+		while(true)
 		{
-			//calculate difference
-		int difference = (SensorValue[RTower] - TowerPosition)*0.5;
+			if(TowerHold)//should tower code be running?
+			{
+				//calculate difference
+				int difference = (SensorValue[RTower] - TowerPosition)*0.5;
 
-		//Cap difference value if needed
-		if(difference > 127)
-			difference = 127;
-		else if(difference < -127)
-			difference = -127;
+				//Cap difference value if needed
+				if(difference > 127)
+					difference = 127;
+				else if(difference < -127)
+					difference = -127;
 
-			motor[RTower] = motor[LTower] = difference;
+				motor[RTower] = motor[LTower] = difference;
+			}
 		}
 	}
-}
 
-task autonomous()
-{
-	clearLCDLine(0);
+	task autonomous()
+	{
+		clearLCDLine(0);
+		clearLCDLine(1);
+		//Switch Case that actually runs the user choice
+		switch(myauto){
+		case 0:
+			//If count = 0, run the code correspoinding with choice 1
+			displayLCDCenteredString(0, "Right 20");
+			displayLCDCenteredString(1, "Let's Go!");
+			wait1Msec(100);// Robot waits for 100 milliseconds
 
-  clearLCDLine(1);
-
-  bLCDBacklight = true;
-
-  displayLCDCenteredString(0, "Let's Go!");
-
-  switch(myauto){
+			break;
 
 		case 1:
+			//If count = 1, run the code correspoinding with choice 2
+			displayLCDCenteredString(0, "Left 20");
+			displayLCDCenteredString(1, "Let's Go!");
+			wait1Msec(100);// Robot waits for 100 milliseconds
 
-		break;
-
-
+			break;
 
 		case 2:
+			//If count = 2, run the code correspoinding with choice 3
+			displayLCDCenteredString(0, "Right 10");
+			displayLCDCenteredString(1, "Let's Go!");
+			wait1Msec(100);// Robot waits for 100 milliseconds
 
-		break;
-
-
+			break;
 
 		case 3:
+			//If count = 3, run the code correspoinding with choice 4
+			displayLCDCenteredString(0, "Left 10");
+			displayLCDCenteredString(1, "Let's Go!");
+			wait1Msec(100);// Robot waits for 100 milliseconds
 
-		break;
-
-
+			break;
 
 		case 4:
+			//If count = 4, run the code correspoinding with choice 5
+			displayLCDCenteredString(0, "Skill");
+			displayLCDCenteredString(1, "Let's Go!");
+			wait1Msec(100);// Robot waits for 100 milliseconds
 
-		break;
+			break;
+		default:
+			displayLCDCenteredString(0, "No valid choice");
+			displayLCDCenteredString(1, "was made!");
+			break;
+		}
+		// ..........................................................................
+		// Insert user code here.
+		// ..........................................................................
 
-		case 5:
-
-		break;
+		// Remove this function call once you have "real" code.
+		AutonomousCodePlaceholderForTesting();
 	}
-  // ..........................................................................
-  // Insert user code here.
-  // ..........................................................................
 
-  // Remove this function call once you have "real" code.
-  AutonomousCodePlaceholderForTesting();
-}
+	/*---------------------------------------------------------------------------*/
+	/*                                                                           */
+	/*                              User Control Task                            */
+	/*                                                                           */
+	/*  This task is used to control your robot during the user control phase of */
+	/*  a VEX Competition.                                                       */
+	/*                                                                           */
+	/*  You must modify the code to add your own robot specific commands here.   */
+	/*---------------------------------------------------------------------------*/
 
-/*---------------------------------------------------------------------------*/
-/*                                                                           */
-/*                              User Control Task                            */
-/*                                                                           */
-/*  This task is used to control your robot during the user control phase of */
-/*  a VEX Competition.                                                       */
-/*                                                                           */
-/*  You must modify the code to add your own robot specific commands here.   */
-/*---------------------------------------------------------------------------*/
+	task usercontrol()
+	{
+		// User control code here, inside the loop
+		bLCDBacklight = true;
+		clearLCDLine(0);
+		clearLCDLine(1);
+		while (true)
+		{
+			displayLCDCenteredString(0, "Once more");
+			displayLCDCenteredString(1, "into the fray");
+			driveBase();
+			driveClaw();
+			driveLift();
+			driveTower();
+		}
+		// This is the main execution loop for the user control program.
+		// Each time through the loop your program should update motor + servo
+		// values based on feedback from the joysticks.
 
-task usercontrol()
-{
-  // User control code here, inside the loop
+		// ........................................................................
+		// Insert user code here. This is where you use the joystick values to
+		// update your motors, etc.
+		// ........................................................................
 
-  while (true)
-  {
-
-
-
-
-    // This is the main execution loop for the user control program.
-    // Each time through the loop your program should update motor + servo
-    // values based on feedback from the joysticks.
-
-    // ........................................................................
-    // Insert user code here. This is where you use the joystick values to
-    // update your motors, etc.
-    // ........................................................................
-
-    // Remove this function call once you have "real" code.
-    UserControlCodePlaceholderForTesting();
-  }
+		// Remove this function call once you have "real" code.
+		UserControlCodePlaceholderForTesting();
 }
