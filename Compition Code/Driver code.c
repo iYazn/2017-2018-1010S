@@ -166,13 +166,8 @@ void autoselector(){
 		}
 		}
 	}
-
-	void pre_auton()
-
-	{
-		bStopTasksBetweenModes = true;
-		bDisplayCompetitionStatusOnLcd = false;
-		SensorType[Gyro] = sensorNone;
+void intSensor (){
+			SensorType[Gyro] = sensorNone;
 		SensorType[LEncoder] = sensorNone;
 		SensorType[REncoder] = sensorNone;
 		// waits 1 sec before setting all the sensors
@@ -182,8 +177,7 @@ void autoselector(){
 		SensorType[REncoder] = sensorQuadEncoder;
 		// waits 2 seconds to let gyro initilize properly
 		// DO NOT MOVE WHILE THIS IS HAPPENING
-		wait1Msec(2000);
-		autoselector();
+		wait1Msec(200);
 	}
 
 	//set sensors to zero.
@@ -371,6 +365,17 @@ void autoselector(){
 		motor[LClaw] = motor[RClaw] = vexRT(Ch3);
 	}
 
+	void pre_auton()
+
+	{
+		bStopTasksBetweenModes = true;
+		bDisplayCompetitionStatusOnLcd = false;
+		// sensor set up
+		intSensor ();
+		setDrive ();
+		autoselector();
+	}
+
 
 	/*---------------------------------------------------------------------------*/
 	/*                                                                           */
@@ -417,6 +422,8 @@ void autoselector(){
 			displayLCDCenteredString(0, "Right 20");
 			displayLCDCenteredString(1, "Let's Go!");
 			wait1Msec(100);// Robot waits for 100 milliseconds
+			Move(127, 600);
+			TowerRise(300);
 
 			break;
 
