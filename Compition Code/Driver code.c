@@ -62,10 +62,10 @@ void waitForRelease()
 }
 //----------------------------------------------------------------
 
-void autoselector(){
+//Declare myauto variable to keep track of our choice
+int myauto = 0;
 
-	//Declare count variable to keep track of our choice
-	int myauto = 0;
+void autoselector(){
 	//------------- Beginning of User Interface Code ---------------
 	//Clear LCD
 	clearLCDLine(0);
@@ -143,7 +143,7 @@ void autoselector(){
 				myauto++;
 			}
 			break;
-		case 3:
+		case 4:
 			//Display fourth choice
 			displayLCDCenteredString(0, "Skill");
 			displayLCDCenteredString(1, "<		 Enter		>");
@@ -280,21 +280,19 @@ void intSensor (){
 			SetRight(-127);
 			SetLeft(127);
 			wait1Msec(time);
-		}
-		SetDrive();
+			setDrive();
 	}
-	void LeftPointTurn(int distance)
+	void LeftPointTurn(int time)
 	{
 			SetRight(127);
 			SetLeft(-127);
 			wait1Msec(time);
-		}
-		SetDrive();
+			setDrive();
 	}
 
 	void TowerRise(int position)
 	{
-		while(SensorValue[RTower] < position;
+		while(SensorValue[RTower] < position)
 		{
 			motor[RTower] = motor[LTower]  = 127;
 		}
