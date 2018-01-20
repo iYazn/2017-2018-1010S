@@ -77,7 +77,7 @@ void autoselector(){
 		switch(myauto){
 		case 0:
 			//Display first choice
-			displayLCDCenteredString(0, "Right 20");
+			displayLCDCenteredString(0, "Right 10");
 			displayLCDCenteredString(1, "<		 Let's Go!		>");
 			waitForPress();
 			//Increment or decrement "count" based on button press
@@ -94,7 +94,7 @@ void autoselector(){
 			break;
 		case 1:
 			//Display second choice
-			displayLCDCenteredString(0, "Left 20");
+			displayLCDCenteredString(0, "Left 10");
 			displayLCDCenteredString(1, "<		 Let's Go!		>");
 			waitForPress();
 			//Increment or decrement "count" based on button press
@@ -111,7 +111,7 @@ void autoselector(){
 			break;
 		case 2:
 			//Display third choice
-			displayLCDCenteredString(0, "Right 10");
+			displayLCDCenteredString(0, "Right 20");
 			displayLCDCenteredString(1, "<		 Let's Go!		>");
 			waitForPress();
 			//Increment or decrement "count" based on button press
@@ -128,7 +128,7 @@ void autoselector(){
 			break;
 		case 3:
 			//Display fourth choice
-			displayLCDCenteredString(0, "Left 10");
+			displayLCDCenteredString(0, "Left 20");
 			displayLCDCenteredString(1, "<		 Let's Go!		>");
 			waitForPress();
 			//Increment or decrement "count" based on button press
@@ -234,7 +234,7 @@ void intSensor (){
 	{
 		SensorValue[LEncoder] = 0;
 		SensorValue[REncoder] = 0;
-		float kp = 0.1;//proportional constant, can be tuned.
+		float kp =0.08 //proportional constant, can be tuned.
 		while(abs(SensorValue[REncoder]+SensorValue[LEncoder])/2 < distance)
 		{
 			int error = SensorValue[LEncoder] - SensorValue[REncoder];
@@ -322,6 +322,16 @@ void intSensor (){
 	void TowerDown(int power, int time)
 	{
 		motor[RTower] = motor[LTower] = -power;
+		wait1Msec(time);
+	}
+	void Forward(int power, int time)
+	{
+		motor[RFront] = motor[RBack] = motor[LFront] = motor[LBack] = power;
+		wait1Msec(time);
+	}
+	void Backward(int power, int time)
+	{
+		motor[RFront] = motor[RBack] = motor[LFront] = motor[LBack] = -power;
 		wait1Msec(time);
 	}
 
@@ -430,54 +440,54 @@ void intSensor (){
 		switch(myauto){
 		case 0:
 			//If count = 0, run the code correspoinding with choice 1
-			displayLCDCenteredString(0, "Right 20");
-			displayLCDCenteredString(1, "Let's Go!");
+			displayLCDCenteredString(0, "Right 10");
+			displayLCDCenteredString(1, "IS RUNNING");
 			wait1Msec(100);// Robot waits for 100 milliseconds
-			/*TowerRise(127, 400);
+			TowerRise(127, 400);
 			StopTower(10);
-			Lift(-127, 1000);
-			Move(127, 800);
-			StopDrive(10);
-			Lift(127, 1400);
+			Lift(-127, 1190);
 			StopLift(10);
+			Move(127, 2400);
+			StopDrive(10);
+			Lift(127, 1300);
+			StopLift(10);
+			TowerDown(127, 430);
+			StopTower(10);
+			Move(80, 100);
+			StopDrive(10);
+			Claw(-127, 330);
+			StopClaw(300);
+			TowerRise(127, 400);
+			StopTower(100);
 			Claw(127, 300);
-			TowerDown(127, 360);
-			Claw(-127, 200);
-			Move(-127, 150);
-			*/
-			gyroturnL(127, 900);/*
-
-			Move(127, 200);
-			LeftPointTurn(500);
-			Claw(-127, 400);
-			TowerRise(127, 500);
+			StopClaw(500);
+			TowerDown(127, 420);
+			StopTower(1000);
+			Claw(-127,200);
+			StopClaw(100);
+			/*
+			Move(-127, 350);
+			StopDrive(10);
+			LeftPointTurn(1400);
+			StopDrive(10);
+			Move(127, 130);
+			StopDrive(10);
+			LeftPointTurn(870);
+			StopDrive(10);
+			Claw(127, 200);
+			StopClaw(100);
+			TowerRise(127, 400);
+			StopTower(100);
 			Lift(-127, 1100);
-			Move(-127, -100);
+			StopLift(10);
+			Move(-127, 200);
 			StopDrive(10);*/
-
-
-			/*Lift(127, 1300);
-			Move(127, 800);
-			StopDrive();
-			Lift(127, 1400);
-			Claw(80, 230);
-			TowerDown(0);
-			Claw(-127, 200);
-			Move(-127, -600);
-			LeftPointTurn(600);
-			Move(127, 200);
-			LeftPointTurn(455);
-			TowerRise(300);
-			Move(127, 120);
-			Lift(-127, 1100);
-			Move(-127, 100);
-			StopDrive();*/
 			break;
 
 		case 1:
 			//If myauto = 1, run the code correspoinding with choice 2
-			displayLCDCenteredString(0, "Left 20");
-			displayLCDCenteredString(1, "Let's Go!");
+			displayLCDCenteredString(0, "Left 10");
+			displayLCDCenteredString(1, "IS RUNNING");
 			wait1Msec(100);// Robot waits for 100 milliseconds
 			TowerRise(127, 1200);
 			StopTower(10);
@@ -499,8 +509,8 @@ void intSensor (){
 
 		case 2:
 			//If count = 2, run the code correspoinding with choice 3
-			displayLCDCenteredString(0, "Right 10");
-			displayLCDCenteredString(1, "Let's Go!");
+			displayLCDCenteredString(0, "Right 20");
+			displayLCDCenteredString(1, "IS RUNNING");
 			wait1Msec(100);// Robot waits for 100 milliseconds
 			TowerRise(127, 400);
 			StopTower(10);
@@ -522,8 +532,8 @@ void intSensor (){
 
 		case 3:
 			//If count = 3, run the code correspoinding with choice 4
-			displayLCDCenteredString(0, "Left 10");
-			displayLCDCenteredString(1, "Let's Go!");
+			displayLCDCenteredString(0, "Left 20");
+			displayLCDCenteredString(1, "IS RUNNING");
 			wait1Msec(100);// Robot waits for 100 milliseconds
 			TowerRise(127, 1200);
 			StopTower(10);
@@ -546,7 +556,7 @@ void intSensor (){
 		case 4:
 			//If myauto = 4, run the code correspoinding with choice 5
 			displayLCDCenteredString(0, "Skill");
-			displayLCDCenteredString(1, "Let's Go!");
+			displayLCDCenteredString(1, "IS RUNNING");
 			wait1Msec(100);// Robot waits for 100 milliseconds
 
 			break;
