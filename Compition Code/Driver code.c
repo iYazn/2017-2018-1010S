@@ -7,8 +7,8 @@
 #pragma config(Motor,  port1,           RClaw,         tmotorVex393_HBridge, openLoop, reversed)
 #pragma config(Motor,  port2,           RFront,        tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           LFront,        tmotorVex393_MC29, openLoop)
-#pragma config(Motor,  port4,           RLift,         tmotorVex393_MC29, openLoop, reversed)
-#pragma config(Motor,  port5,           LLift,         tmotorVex393_MC29, openLoop)
+#pragma config(Motor,  port4,           RLift,         tmotorVex393_MC29, openLoop)
+#pragma config(Motor,  port5,           LLift,         tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port6,           RBack,         tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port7,           LBack,         tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port8,           LTower,        tmotorVex393_MC29, openLoop, reversed)
@@ -234,7 +234,7 @@ void intSensor (){
 	{
 		SensorValue[LEncoder] = 0;
 		SensorValue[REncoder] = 0;
-		float kp = 0.5;//proportional constant, can be tuned.
+		float kp = 0.1;//proportional constant, can be tuned.
 		while(abs(SensorValue[REncoder]+SensorValue[LEncoder])/2 < distance)
 		{
 			int error = SensorValue[LEncoder] - SensorValue[REncoder];
@@ -282,17 +282,15 @@ void intSensor (){
 
 	void RightPointTurn(int time)
 	{
-			SetRight(-127);
-			SetLeft(127);
+			motor[RFront] = motor[RBack] = -127;
+			motor[LFront] = motor[LBack] = 127;
 			wait1Msec(time);
-			setDrive();
 	}
 	void LeftPointTurn(int time)
 	{
-			SetRight(127);
-			SetLeft(-127);
+			motor[RFront] = motor[RBack] = 127;
+			motor[LFront] = motor[LBack] = -127;
 			wait1Msec(time);
-			setDrive();
 	}
 
 	/*void TowerRise(int position)
@@ -435,22 +433,27 @@ void intSensor (){
 			displayLCDCenteredString(0, "Right 20");
 			displayLCDCenteredString(1, "Let's Go!");
 			wait1Msec(100);// Robot waits for 100 milliseconds
-			TowerRise(127, 1200);
+			/*TowerRise(127, 400);
 			StopTower(10);
-			Lift(127, 1200);
+			Lift(-127, 1000);
 			Move(127, 800);
 			StopDrive(10);
-			Lift(-127, 1200);
+			Lift(127, 1400);
 			StopLift(10);
-			TowerDown(127, 300);
-			LeftPointTurn(600);
+			Claw(127, 300);
+			TowerDown(127, 360);
+			Claw(-127, 200);
+			Move(-127, 150);
+			*/
+			gyroturnL(127, 900);/*
+
 			Move(127, 200);
 			LeftPointTurn(500);
 			Claw(-127, 400);
 			TowerRise(127, 500);
 			Lift(-127, 1100);
 			Move(-127, -100);
-			StopDrive(10);
+			StopDrive(10);*/
 
 
 			/*Lift(127, 1300);
@@ -499,9 +502,9 @@ void intSensor (){
 			displayLCDCenteredString(0, "Right 10");
 			displayLCDCenteredString(1, "Let's Go!");
 			wait1Msec(100);// Robot waits for 100 milliseconds
-			TowerRise(127, 1200);
+			TowerRise(127, 400);
 			StopTower(10);
-			Lift(127, 1200);
+			Lift(-127, 1200);
 			Move(127, 800);
 			StopDrive(10);
 			Lift(-127, 1200);
