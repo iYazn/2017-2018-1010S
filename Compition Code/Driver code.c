@@ -237,10 +237,10 @@ void intSensor (){
 		float kp =0.08 //proportional constant, can be tuned.
 		while(abs(SensorValue[REncoder]+SensorValue[LEncoder])/2 < distance)
 		{
-			int error = SensorValue[LEncoder] - SensorValue[REncoder];
+			int error = SensorValue[REncoder] - SensorValue[LEncoder];
 			//find the difference between the two encoders.
-			SetLeft(power - error*kp);
-			SetRight(power + error*kp);
+			SetLeft(power +error*kp);
+			SetRight(power -error*kp);
 		}//end while
 		setDrive();
 	}// end MoveForward
