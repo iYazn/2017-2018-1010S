@@ -206,9 +206,10 @@ void intSensor (){
 		motor[LFront] = motor[LBack] = power;
 	}
 
-	void StopDrive()
+	void StopDrive(int time)
 	{
 		motor[RFront] = motor[LFront] = motor[RBack] = motor[LBack] = 0;
+		wait1Msec(time);
 	}
 
 	void StopLift(int time)
@@ -444,7 +445,12 @@ void intSensor (){
 			TowerDown(127, 300);
 			LeftPointTurn(600);
 			Move(127, 200);
-
+			LeftPointTurn(500);
+			Claw(-127, 400);
+			TowerRise(127, 500);
+			Lift(-127, 1100);
+			Move(-127, -100);
+			StopDrive(10);
 
 
 			/*Lift(127, 1300);
@@ -470,7 +476,22 @@ void intSensor (){
 			displayLCDCenteredString(0, "Left 20");
 			displayLCDCenteredString(1, "Let's Go!");
 			wait1Msec(100);// Robot waits for 100 milliseconds
-
+			TowerRise(127, 1200);
+			StopTower(10);
+			Lift(127, 1200);
+			Move(127, 800);
+			StopDrive(10);
+			Lift(-127, 1200);
+			StopLift(10);
+			TowerDown(127, 300);
+			RightPointTurn(600);
+			Move(127, 200);
+			RightPointTurn(500);
+			Claw(-127, 400);
+			TowerRise(127, 500);
+			Lift(-127, 1100);
+			Move(-127, -100);
+			StopDrive(10);
 			break;
 
 		case 2:
@@ -478,7 +499,22 @@ void intSensor (){
 			displayLCDCenteredString(0, "Right 10");
 			displayLCDCenteredString(1, "Let's Go!");
 			wait1Msec(100);// Robot waits for 100 milliseconds
-
+			TowerRise(127, 1200);
+			StopTower(10);
+			Lift(127, 1200);
+			Move(127, 800);
+			StopDrive(10);
+			Lift(-127, 1200);
+			StopLift(10);
+			TowerDown(127, 300);
+			LeftPointTurn(600);
+			Move(127, 200);
+			LeftPointTurn(500);
+			Claw(-127, 400);
+			TowerRise(127, 500);
+			Lift(-127, 1100);
+			Move(-127, -100);
+			StopDrive(10);
 			break;
 
 		case 3:
@@ -486,7 +522,22 @@ void intSensor (){
 			displayLCDCenteredString(0, "Left 10");
 			displayLCDCenteredString(1, "Let's Go!");
 			wait1Msec(100);// Robot waits for 100 milliseconds
-
+			TowerRise(127, 1200);
+			StopTower(10);
+			Lift(127, 1200);
+			Move(127, 800);
+			StopDrive(10);
+			Lift(-127, 1200);
+			StopLift(10);
+			TowerDown(127, 300);
+			RightPointTurn(600);
+			Move(127, 200);
+			RightPointTurn(500);
+			Claw(-127, 400);
+			TowerRise(127, 500);
+			Lift(-127, 1100);
+			Move(-127, -100);
+			StopDrive(10);
 			break;
 
 		case 4:
