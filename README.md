@@ -2,6 +2,3 @@
 Repository for Team 1010S
 
 Hi, welcome to 1010S
-
-
-Hi, this is Teng.
