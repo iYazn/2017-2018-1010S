@@ -234,15 +234,16 @@ void intSensor (){
 	{
 		SensorValue[LEncoder] = 0;
 		SensorValue[REncoder] = 0;
-		float kp =0.08 //proportional constant, can be tuned.
-		while(abs(SensorValue[REncoder]+SensorValue[LEncoder])/2 < distance)
+		float kp = 0.2; //proportional constant, can be tuned.
+		while((SensorValue[REncoder]+SensorValue[LEncoder])/2 < distance)
 		{
-			int error = SensorValue[REncoder] - SensorValue[LEncoder];
+			int error = SensorValue[LEncoder] - SensorValue[REncoder];
 			//find the difference between the two encoders.
-			SetLeft(power +error*kp);
-			SetRight(power -error*kp);
+			motor[LFront] = motor[LBack] = power + error*kp;
+			motor[RFront] = motor[RBack] = power - error*kp;
 		}//end while
 		setDrive();
+		motor[LBack] = motor[LFront] = motor[RBack] = motor[RFront] = 0;
 	}// end MoveForward
 
 	void gyroturnL(int power, int gyrovalue){
@@ -386,7 +387,7 @@ void intSensor (){
 		motor[LClaw] = motor[RClaw] = vexRT(Ch3Xmtr2);
 	}
 
-	void pre_auton()
+	void preton()
 
 	{
 		bStopTasksBetweenModes = true;
@@ -445,65 +446,68 @@ void intSensor (){
 			wait1Msec(100);// Robot waits for 100 milliseconds
 			TowerRise(127, 400);
 			StopTower(10);
-			Lift(-127, 1190);
+			Lift(-127, 1210);
 			StopLift(10);
-			Move(127, 2400);
+			Forward(127, 2500);
 			StopDrive(10);
 			Lift(127, 1300);
 			StopLift(10);
-			TowerDown(127, 430);
-			StopTower(10);
-			Move(80, 100);
-			StopDrive(10);
-			Claw(-127, 330);
-			StopClaw(300);
-			TowerRise(127, 400);
-			StopTower(100);
-			Claw(127, 300);
-			StopClaw(500);
 			TowerDown(127, 420);
-			StopTower(1000);
-			Claw(-127,200);
-			StopClaw(100);
-			/*
-			Move(-127, 350);
-			StopDrive(10);
-			LeftPointTurn(1400);
-			StopDrive(10);
-			Move(127, 130);
-			StopDrive(10);
-			LeftPointTurn(870);
-			StopDrive(10);
-			Claw(127, 200);
-			StopClaw(100);
-			TowerRise(127, 400);
 			StopTower(100);
-			Lift(-127, 1100);
+			Claw(-127,100);
+			StopClaw(10);
+			Backward(127, 2300);
+			StopDrive(10);
+			LeftPointTurn(1100);
+			StopDrive(10);
+			Forward(127, 500);
+			StopDrive(10);
+			LeftPointTurn(860);
+			StopDrive(10);
+			Forward(127, 500);
+			Claw(127, 200);
+			StopClaw(10);
+			TowerRise(127, 400);
+			StopTower(10);
+			Lift(-127, 1200);
 			StopLift(10);
-			Move(-127, 200);
-			StopDrive(10);*/
+			Backward(127, 600);
+			StopDrive(10);
 			break;
 
 		case 1:
 			//If myauto = 1, run the code correspoinding with choice 2
 			displayLCDCenteredString(0, "Left 10");
 			displayLCDCenteredString(1, "IS RUNNING");
-			wait1Msec(100);// Robot waits for 100 milliseconds
-			TowerRise(127, 1200);
+				wait1Msec(100);// Robot waits for 100 milliseconds
+			TowerRise(127, 400);
 			StopTower(10);
-			Lift(127, 1200);
-			Move(127, 800);
+			Lift(-127, 1210);
+			StopLift(10);
+			Forward(127, 2500);
 			StopDrive(10);
+			Lift(127, 1300);
+			StopLift(10);
+			TowerDown(127, 420);
+			StopTower(100);
+			Claw(-127,100);
+			StopClaw(10);
+			Backward(127, 2300);
+			StopDrive(10);
+			RightPointTurn(1100);
+			StopDrive(10);
+			Forward(127, 500);
+				StopDrive(10);
+			RightPointTurn(860);
+			StopDrive(10);
+			Forward(127, 500);
+			Claw(127, 200);
+			StopClaw(10);
+			TowerRise(127, 400);
+			StopTower(10);
 			Lift(-127, 1200);
 			StopLift(10);
-			TowerDown(127, 300);
-			RightPointTurn(600);
-			Move(127, 200);
-			RightPointTurn(500);
-			Claw(-127, 400);
-			TowerRise(127, 500);
-			Lift(-127, 1100);
-			Move(-127, -100);
+			Backward(127, 600);
 			StopDrive(10);
 			break;
 
